@@ -1,0 +1,188 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null && request.auth.uid != null;
+    }
+
+    function isOwner() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/app_config/founder)
+        && get(/databases/$(database)/documents/app_config/founder).data.ownerUid == request.auth.uid
+        && get(/databases/$(database)/documents/app_config/founder).data.locked == true;
+    }
+
+    function isSelf(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // One-time immutable Founder/Owner lock binding Firebase UID to HR-0001
+    match /app_config/founder {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+        && !exists(/databases/$(database)/documents/app_config/founder)
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.role == "OWNER"
+        && request.resource.data.locked == true;
+      allow update, delete: if false;
+    }
+
+    // Verification Requests — users submit their own PENDING request; only Owner approves/rejects
+    match /verification_requests/{requestId} {
+      allow read: if isOwner() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isSignedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.status == "PENDING";
+      allow update, delete: if isOwner();
+    }
+
+    // Permanent, unique HereApp ID registry (HR/XXXXXX and Owner 1000000000)
+    match /hereapp_ids/{hereAppId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+        && !exists(/databases/$(database)/documents/hereapp_ids/$(hereAppId))
+        && request.resource.data.uid == request.auth.uid
+        && ((hereAppId != "1000000000" && hereAppId != "HR-0001" && hereAppId != "HR-DEV9KH") || isOwner());
+      allow update, delete: if false;
+    }
+
+    // User Profiles — strictly block clients from modifying isVerified, verifiedTier, badges, isOwner, isAdmin, or claiming 1000000000
+    match /users/{uid} {
+      allow read: if isSignedIn();
+      allow create: if isSelf(uid)
+        && !('isOwner' in request.resource.data && request.resource.data.isOwner == true)
+        && !('isAdmin' in request.resource.data && request.resource.data.isAdmin == true)
+        && !('isVerified' in request.resource.data && request.resource.data.isVerified == true)
+        && !('verifiedTier' in request.resource.data)
+        && !('badges' in request.resource.data)
+        && !('role' in request.resource.data)
+        && (!('userId' in request.resource.data) || request.resource.data.userId != "1000000000")
+        && (!('hereAppId' in request.resource.data) || (request.resource.data.hereAppId != "1000000000" && request.resource.data.hereAppId != "HR-0001" && request.resource.data.hereAppId != "HR-DEV9KH"))
+        && !('suspended' in request.resource.data && request.resource.data.suspended == true);
+      allow update: if isOwner() || (
+        isSelf(uid)
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['username', 'displayName', 'biography', 'countryOrRegion', 'photoUri', 'bannerUri', 'personalAccent', 'privacySettings', 'userId', 'hereAppId', 'fcmToken', 'updatedAt'])
+        && (!('userId' in resource.data) || request.resource.data.userId == resource.data.userId)
+        && (!('userId' in request.resource.data) || request.resource.data.userId != "1000000000")
+        && (!('hereAppId' in resource.data) || request.resource.data.hereAppId == resource.data.hereAppId)
+        && (!('hereAppId' in request.resource.data) || (request.resource.data.hereAppId != "1000000000" && request.resource.data.hereAppId != "HR-0001" && request.resource.data.hereAppId != "HR-DEV9KH"))
+      );
+      allow delete: if isSelf(uid) || isOwner();
+
+      // Per-user notifications (Owner can send verification approval/rejection/revocation notices)
+      match /notifications/{notifId} {
+        allow read: if isSelf(uid);
+        allow create: if isOwner();
+        allow update, delete: if isSelf(uid) || isOwner();
+      }
+
+      // Per-user blocked accounts
+      match /blocked_users/{targetUid} {
+        allow read, write: if isSelf(uid);
+      }
+
+      // Per-user bookmarks
+      match /bookmarks/{bookmarkId} {
+        allow read, write: if isSelf(uid);
+      }
+    }
+
+    // Unique @Username Registry (enforces uniqueness & supports @username sign-in lookup)
+    match /usernames/{username} {
+      allow read: if true;
+      allow create: if isSignedIn()
+        && !exists(/databases/$(database)/documents/usernames/$(username))
+        && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    // Here Groups — creation, public discovery, member sync, and Owner/admin permissions
+    match /groups/{groupId} {
+      allow read: if isSignedIn() && (
+        isOwner()
+        || resource.data.isPublic == true
+        || request.auth.uid in resource.data.memberUids
+      );
+      allow create: if isSignedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.auth.uid in request.resource.data.memberUids
+        && request.auth.uid in request.resource.data.adminUids;
+      allow update: if isSignedIn() && (
+        request.auth.uid in resource.data.adminUids
+        || isOwner()
+        || (resource.data.isPublic == true && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['memberUids', 'updatedAt']))
+        || (request.auth.uid in resource.data.memberUids && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['memberUids', 'updatedAt']))
+      );
+      allow delete: if isSignedIn() && (
+        resource.data.ownerUid == request.auth.uid || isOwner()
+      );
+    }
+
+    // Direct & Group Conversations scoped strictly to participants
+    match /conversations/{conversationId} {
+      allow read, update: if isSignedIn() && request.auth.uid in resource.data.participantUids;
+      allow create: if isSignedIn() && request.auth.uid in request.resource.data.participantUids;
+      allow delete: if isOwner();
+
+      match /messages/{messageId} {
+        allow read: if isSignedIn()
+          && request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participantUids;
+        allow create: if isSignedIn()
+          && request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participantUids
+          && request.resource.data.senderUid == request.auth.uid;
+        allow update, delete: if isSignedIn() && resource.data.senderUid == request.auth.uid;
+      }
+    }
+
+    // WhatsApp-style Direct Chats ("chats" collection) scoped to participants
+    match /chats/{chatId} {
+      allow read, update: if isSignedIn() && request.auth.uid in resource.data.participantUids;
+      allow create: if isSignedIn() && request.auth.uid in request.resource.data.participantUids;
+      allow delete: if isOwner();
+
+      match /messages/{msgId} {
+        allow read: if isSignedIn()
+          && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participantUids;
+        allow create: if isSignedIn()
+          && request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participantUids
+          && request.resource.data.senderUid == request.auth.uid;
+        allow update, delete: if isSignedIn() && (resource.data.senderUid == request.auth.uid || isOwner());
+      }
+    }
+
+    // Live Workspace Chat Messages ("messages" collection)
+    match /messages/{messageId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+        && request.resource.data.senderUid == request.auth.uid
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 2000;
+      allow update: if isSignedIn() && (
+        resource.data.senderUid == request.auth.uid
+        || isOwner()
+        || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reactions'])
+      );
+      allow delete: if isSignedIn() && (resource.data.senderUid == request.auth.uid || isOwner());
+    }
+
+    // User Reports — any signed-in user can file a report; only Owner can read/resolve
+    match /reports/{reportId} {
+      allow create: if isSignedIn() && request.resource.data.reporterUid == request.auth.uid;
+      allow read, update, delete: if isOwner();
+    }
+
+    // Immutable Administrative Audit Logs — Owner-only write & read
+    match /audit_logs/{logId} {
+      allow read, create: if isOwner();
+      allow update, delete: if false;
+    }
+
+    // Default deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

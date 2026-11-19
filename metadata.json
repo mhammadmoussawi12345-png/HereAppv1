@@ -1,0 +1,6 @@
+{
+  "name": "HereApp",
+  "description": "Premium global messaging application — JUST BE HERE.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
