@@ -15,17 +15,20 @@
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body { background: #000; color: var(--text); font-family: var(--font); display: flex; justify-content: center; min-height: 100dvh; overflow: hidden; }
     .app { width: 100%; max-width: 440px; height: 100dvh; background: radial-gradient(circle at top center, rgba(212, 175, 55, 0.12), transparent 46%), var(--bg); display: flex; flex-direction: column; position: relative; overflow-y: auto; }
-    .screen { display: none; flex: 1; flex-direction: column; min-height: 100%; padding: calc(18px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom)); animation: fadeUp 0.28s ease; }
+    .screen { display: none; flex: 1; flex-direction: column; min-height: 100%; padding: calc(18px + env(safe-area-inset-top)) 24px calc(80px + env(safe-area-inset-bottom)); animation: fadeUp 0.28s ease; }
     .screen.active { display: flex; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    
     .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .back-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--gold); font-size: 18px; cursor: pointer; }
     .lang-btn { background: var(--gold-dim); color: var(--gold); border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; }
+    
     .welcome-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 12px 0; }
     .emblem { width: 88px; height: 88px; border-radius: 26px; border: 1.5px solid var(--gold); background: linear-gradient(145deg, #211c10, #0e0d0a); color: var(--gold-light); font-size: 38px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-bottom: 22px; box-shadow: 0 14px 36px rgba(212, 175, 55, 0.24); }
     .brand-title { font-size: 32px; font-weight: 800; letter-spacing: 0.6px; background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
     .brand-sub { color: var(--muted); font-size: 14px; line-height: 1.65; max-width: 300px; margin-bottom: 28px; }
     .welcome-actions { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-top: auto; }
+    
     .auth-header { margin: 12px 0 26px; }
     .auth-header h2 { font-size: 26px; font-weight: 800; margin-bottom: 6px; color: var(--text); }
     .auth-header p { font-size: 14px; color: var(--muted); }
@@ -42,8 +45,22 @@
     .status-box { display: none; padding: 12px 14px; border-radius: 12px; font-size: 13px; margin-bottom: 14px; line-height: 1.5; }
     .status-box.error { display: block; background: rgba(226, 92, 92, 0.12); border: 1px solid rgba(226, 92, 92, 0.45); color: #ff9c9c; }
     .status-box.ok { display: block; background: var(--gold-dim); border: 1px solid var(--border); color: var(--gold-light); }
+
     .avatar-upload { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; background: var(--surface); font-size: 40px; cursor: pointer; position: relative; overflow: hidden; color: var(--gold); }
-    .id-badge { background: var(--surface-2); color: var(--gold); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--gold); font-weight: 800; display: inline-block; margin-bottom: 20px; font-size: 14px; letter-spacing: 2px; }
+
+    /* Bottom Navigation */
+    .bottom-nav { display: flex; justify-content: space-around; background: var(--surface); border-top: 1px solid var(--border); padding: 12px 0 calc(12px + env(safe-area-inset-bottom)); position: fixed; bottom: 0; width: 100%; max-width: 440px; z-index: 100; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--muted); font-size: 11px; cursor: pointer; gap: 4px; transition: color 0.2s; }
+    .nav-item.active { color: var(--gold); }
+    .nav-item span { font-size: 22px; }
+
+    /* Profile Screen */
+    .profile-header { text-align: center; margin-top: 20px; }
+    .profile-avatar { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--gold); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; background: var(--surface); font-size: 50px; color: var(--gold); }
+    .profile-name { font-size: 24px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .profile-username { font-size: 16px; color: var(--muted); margin-bottom: 16px; }
+    .id-badge { background: var(--surface-2); color: var(--gold); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--gold); font-weight: 800; display: inline-block; font-size: 15px; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 18px; margin-bottom: 14px; margin-top: 20px; }
   </style>
 </head>
 <body>
@@ -92,12 +109,11 @@
       <div class="link-row"><span>لديك حساب بالفعل؟</span><button type="button" onclick="showScreen('signin')">تسجيل الدخول</button></div>
     </section>
 
-    <!-- 4. PROFILE SETUP -->
+    <!-- 4. PROFILE SETUP (بدون ID) -->
     <section id="screen-profile-setup" class="screen">
       <div class="top-row"><h2 style="color:var(--gold);font-size:20px;">إعداد الملف الشخصي</h2></div>
       <div style="text-align: center;">
         <div class="avatar-upload" onclick="alert('ميزة رفع الصور رح تنضاف بالمرحلة الجاية!')"><span>+</span></div>
-        <div id="my-id-badge" class="id-badge">ID: 00001</div>
       </div>
       <form id="profile-form">
         <div class="field"><label>الاسم الكامل</label><input id="prof-name" class="input" type="text" required placeholder="الاسم الكامل" /></div>
@@ -106,14 +122,44 @@
       </form>
     </section>
 
-    <!-- 5. HOME (Placeholder) -->
+    <!-- 5. HOME SCREEN -->
     <section id="screen-home" class="screen">
-      <div class="top-row"><h2 style="color:var(--gold);font-size:20px;">HereApp</h2><button class="btn-outline" style="width:auto;padding:6px 12px;" id="signout-btn">خروج</button></div>
-      <div class="card" style="text-align:center; margin-top:50px;">
+      <div class="top-row"><h2 style="color:var(--gold);font-size:20px;">HereApp</h2></div>
+      <div class="card" style="text-align:center; margin-top:30px;">
         <div class="emblem" style="margin:0 auto 20px;">H</div>
-        <h2 style="color:var(--gold); margin-bottom:10px;">أهلاً بك في HereApp</h2>
-        <p style="color:var(--muted); font-size:14px;">أنت الآن جاهز لبدء المحادثات!</p>
+        <h2 style="color:var(--gold); margin-bottom:10px;">قريباً!</h2>
+        <p style="color:var(--muted); font-size:14px;">هنا رح تكون المحادثات تبعك.</p>
       </div>
+      
+      <!-- الشريط السفلي -->
+      <div class="bottom-nav">
+        <div class="nav-item active"><span>💬</span>محادثات</div>
+        <div class="nav-item"><span>👥</span>مجموعات</div>
+        <div class="nav-item"><span>🔍</span>استكشاف</div>
+        <div class="nav-item" onclick="showScreen('profile')"><span>👤</span>حسابي</div>
+        <div class="nav-item" onclick="signOut(auth)"><span>⚙️</span>إعدادات</div>
+      </div>
+    </section>
+
+    <!-- 6. MY PROFILE SCREEN -->
+    <section id="screen-profile" class="screen">
+      <div class="top-row">
+        <button class="back-btn" onclick="showScreen('home')">←</button>
+        <h2 style="color:var(--gold);font-size:20px;">حسابي</h2>
+        <div style="width:40px;"></div>
+      </div>
+      <div class="profile-header">
+        <div class="profile-avatar">H</div>
+        <div id="prof-display-name" class="profile-name">...</div>
+        <div id="prof-display-username" class="profile-username">@...</div>
+        <div id="prof-display-id" class="id-badge">ID: ...</div>
+      </div>
+      
+      <div class="card" style="text-align:center;">
+        <p style="color:var(--muted); font-size:13px;">هذه هويتك الرقمية الخاصة في HereApp. لا تشارك رقم الـ ID الخاص بك مع أشخاص لا تثق بهم.</p>
+      </div>
+      
+      <button class="btn-outline" style="margin-top:auto; margin-bottom:20px;" onclick="signOut(auth)">تسجيل الخروج</button>
     </section>
 
   </div>
@@ -143,6 +189,22 @@
       box.className = "status-box " + type;
     }
 
+    // دالة عرض شاشة الحساب وجلب البيانات
+    window.showProfile = async () => {
+        const user = auth.currentUser;
+        if (!user) return;
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            document.getElementById("prof-display-name").innerText = data.displayName || "بدون اسم";
+            document.getElementById("prof-display-username").innerText = "@" + (data.username || "user");
+            document.getElementById("prof-display-id").innerText = "ID: " + (data.hereAppId || "00000");
+        }
+        showScreen('profile');
+    };
+
+    // مراقبة حالة الدخول
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const docRef = doc(db, "users", user.uid);
@@ -157,6 +219,7 @@
       }
     });
 
+    // تسجيل الدخول
     document.getElementById("signin-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const btn = document.getElementById("signin-btn");
@@ -171,15 +234,17 @@
       } finally { btn.disabled = false; }
     });
 
+    // نسيت كلمة المرور
     document.getElementById("forgot-btn").addEventListener("click", async () => {
       const email = document.getElementById("signin-email").value.trim();
       if (!email) return setStatus("signin-status", "أدخل بريدك الإلكتروني أولاً.", "error");
       try {
         await sendPasswordResetEmail(auth, email);
-        setStatus("signin-status", "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك.", "ok");
+        setStatus("signin-status", "تم إرسال رابط إعادة تعيين كلمة المرور.", "ok");
       } catch (err) { setStatus("signin-status", err.message, "error"); }
     });
 
+    // إنشاء حساب
     document.getElementById("signup-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const btn = document.getElementById("signup-btn");
@@ -206,6 +271,7 @@
       } finally { btn.disabled = false; }
     });
 
+    // حفظ البروفايل
     document.getElementById("profile-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const name = document.getElementById("prof-name").value;
@@ -226,12 +292,13 @@
       } catch (error) { alert("خطأ في الحفظ: " + error.message); }
     });
 
-    document.getElementById("signout-btn").addEventListener("click", () => signOut(auth));
-
     window.showScreen = function (name) {
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
       const target = document.getElementById("screen-" + name);
       if (target) target.classList.add("active");
+      
+      // إذا فتحنا شاشة الحساب، نجيب البيانات
+      if(name === 'profile') window.showProfile();
     };
   </script>
 </body>
