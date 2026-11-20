@@ -1,683 +1,85 @@
-cat > www/index.html << 'EOF'
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#0a0a0a" />
   <title>HereApp</title>
   <style>
     :root {
-      --bg: #0a0a0a;
-      --surface: #141414;
-      --surface-2: #1c1c1c;
-      --border: rgba(212, 175, 55, 0.24);
-      --gold: #d4af37;
-      --gold-light: #f1d77a;
-      --gold-dim: rgba(212, 175, 55, 0.14);
-      --text: #f5f2eb;
-      --muted: #9a9488;
-      --nav-h: 66px;
+      --bg: #0a0a0a; --surface: #141414; --surface-2: #1c1c1c; --border: rgba(212, 175, 55, 0.24);
+      --gold: #d4af37; --gold-light: #f1d77a; --gold-dim: rgba(212, 175, 55, 0.14);
+      --text: #f5f2eb; --muted: #9a9488; --nav-h: 66px;
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Arabic", sans-serif;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-    body {
-      background: #000;
-      color: var(--text);
-      font-family: var(--font);
-      display: flex;
-      justify-content: center;
-      min-height: 100dvh;
-    }
-
-    .app {
-      width: 100%;
-      max-width: 440px;
-      min-height: 100dvh;
-      background: var(--bg);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .screen {
-      display: none;
-      flex: 1;
-      flex-direction: column;
-      min-height: 100dvh;
-      animation: fadeIn 0.22s ease;
-    }
+    body { background: #000; color: var(--text); font-family: var(--font); display: flex; justify-content: center; min-height: 100vh; min-height: 100dvh; overflow: hidden; }
+    .app { width: 100%; max-width: 100%; height: 100vh; height: 100dvh; background: var(--bg); display: flex; flex-direction: column; position: relative; }
+    .screen { display: none; flex: 1; flex-direction: column; height: 100%; overflow-y: auto; animation: fadeIn 0.22s ease; }
     .screen.active { display: flex; }
-    .screen.has-nav { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 12px); }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: calc(14px + env(safe-area-inset-top)) 18px 14px;
-      background: rgba(10, 10, 10, 0.94);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 20;
-    }
-
-    .topbar h1 {
-      font-size: 21px;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .pill-btn {
-      background: var(--gold-dim);
-      color: var(--gold);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 6px 12px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .icon-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--gold);
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .auth-box {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .logo {
-      width: 68px;
-      height: 68px;
-      border-radius: 20px;
-      margin: 0 auto 16px;
-      border: 1.5px solid var(--gold);
-      background: linear-gradient(145deg, #1d190f, #0d0c09);
-      color: var(--gold);
-      font-size: 28px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 28px rgba(212, 175, 55, 0.22);
-    }
-
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: calc(14px + env(safe-area-inset-top)) 18px 14px; background: rgba(10, 10, 10, 0.94); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
+    .topbar h1 { font-size: 21px; font-weight: 800; background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .auth-box { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 24px; width: 100%; max-width: 440px; margin: 0 auto; }
+    .logo { width: 68px; height: 68px; border-radius: 20px; margin: 0 auto 16px; border: 1.5px solid var(--gold); background: linear-gradient(145deg, #1d190f, #0d0c09); color: var(--gold); font-size: 28px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 28px rgba(212, 175, 55, 0.22); }
     .field { margin-bottom: 14px; }
     .field label { display: block; font-size: 12px; color: var(--gold); margin-bottom: 6px; font-weight: 600; }
-
-    .input {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 13px 15px;
-      border-radius: 14px;
-      font-size: 15px;
-      outline: none;
-    }
+    .input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 13px 15px; border-radius: 14px; font-size: 15px; outline: none; }
     .input:focus { border-color: var(--gold); }
-
-    .btn-gold {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      color: #0a0a0a;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      margin-top: 8px;
-    }
-
-    .btn-outline {
-      width: 100%;
-      padding: 13px;
-      border-radius: 14px;
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--gold);
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    .auth-switch {
-      text-align: center;
-      margin-top: 18px;
-      font-size: 13px;
-      color: var(--muted);
-    }
-    .auth-switch button {
-      background: none;
-      border: none;
-      color: var(--gold);
-      font-weight: 700;
-      cursor: pointer;
-      margin-inline-start: 4px;
-    }
-
-    .search-wrap { padding: 12px 16px 4px; }
-    .search-input {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 10px 16px;
-      color: var(--text);
-      font-size: 14px;
-      outline: none;
-    }
-
-    .section { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-    }
-
-    .chat-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px;
-      border-radius: 16px;
-      background: var(--surface);
-      border: 1px solid rgba(212, 175, 55, 0.12);
-      cursor: pointer;
-    }
-
-    .avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 1.5px solid var(--gold);
-      background: #1a160c;
-      color: var(--gold-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      flex-shrink: 0;
-    }
-
-    .chat-info { flex: 1; min-width: 0; }
-    .chat-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
-    .chat-name { font-weight: 700; font-size: 15px; }
-    .chat-time { font-size: 11px; color: var(--muted); }
-    .chat-preview { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    .badge {
-      min-width: 20px;
-      height: 20px;
-      padding: 0 6px;
-      border-radius: 999px;
-      background: var(--gold);
-      color: #0a0a0a;
-      font-size: 11px;
-      font-weight: 800;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .messages {
-      flex: 1;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      overflow-y: auto;
-    }
-
-    .msg {
-      max-width: 80%;
-      padding: 11px 14px;
-      border-radius: 16px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-    .msg.in { align-self: flex-start; background: var(--surface-2); }
-    .msg.out {
-      align-self: flex-end;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      color: #0a0a0a;
-      font-weight: 600;
-    }
-
-    .composer {
-      display: flex;
-      gap: 8px;
-      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-    }
-    .composer input {
-      flex: 1;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 11px 15px;
-      color: var(--text);
-      font-size: 14px;
-      outline: none;
-    }
-    .send-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      border: none;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      color: #0a0a0a;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .fab {
-      position: fixed;
-      bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px);
-      inset-inline-end: max(18px, calc(50% - 202px));
-      width: 52px;
-      height: 52px;
-      border-radius: 16px;
-      border: none;
-      background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      color: #0a0a0a;
-      font-size: 26px;
-      font-weight: 800;
-      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35);
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 25;
-    }
-    .fab.visible { display: flex; }
-
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      max-width: 440px;
-      height: calc(var(--nav-h) + env(safe-area-inset-bottom));
-      padding-bottom: env(safe-area-inset-bottom);
-      background: rgba(14, 14, 14, 0.96);
-      border-top: 1px solid var(--border);
-      display: none;
-      grid-template-columns: repeat(4, 1fr);
-      z-index: 30;
-    }
-    .bottom-nav.visible { display: grid; }
-
-    .nav-item {
-      background: none;
-      border: none;
-      color: var(--muted);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .nav-item.active { color: var(--gold); }
-    .nav-item span:first-child { font-size: 19px; }
-
-    .toast {
-      position: fixed;
-      top: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--surface-2);
-      border: 1px solid var(--gold);
-      color: var(--gold-light);
-      padding: 9px 16px;
-      border-radius: 999px;
-      font-size: 13px;
-      display: none;
-      z-index: 50;
-    }
+    .btn-gold { width: 100%; padding: 14px; border: none; border-radius: 14px; background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: #0a0a0a; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 8px; }
+    .auth-switch { text-align: center; margin-top: 18px; font-size: 13px; color: var(--muted); }
+    .auth-switch button { background: none; border: none; color: var(--gold); font-weight: 700; cursor: pointer; margin-inline-start: 4px; }
   </style>
 </head>
 <body>
   <div class="app">
-    <div id="toast" class="toast"></div>
-
     <section id="screen-login" class="screen active">
-      <div class="topbar">
-        <h1>HereApp</h1>
-        <button class="pill-btn" onclick="toggleLang()">EN / ع</button>
-      </div>
+      <div class="topbar"><h1>HereApp</h1></div>
       <div class="auth-box">
         <div class="logo">H</div>
-        <h2 style="text-align:center;margin-bottom:6px;" data-i18n="welcome">مرحباً بك في HereApp</h2>
-        <p style="text-align:center;color:var(--muted);font-size:13px;margin-bottom:24px;" data-i18n="loginSub">تطبيق المراسلة الفاخر</p>
-        <form onsubmit="handleLogin(event)">
-          <div class="field">
-            <label data-i18n="email">البريد الإلكتروني</label>
-            <input id="login-email" class="input" type="email" required placeholder="name@hereapp.com" />
-          </div>
-          <div class="field">
-            <label data-i18n="password">كلمة المرور</label>
-            <input id="login-pass" class="input" type="password" required placeholder="••••••••" />
-          </div>
-          <button class="btn-gold" type="submit" data-i18n="signIn">تسجيل الدخول</button>
+        <h2 style="text-align:center;margin-bottom:6px;">مرحباً بك في HereApp</h2>
+        <p style="text-align:center;color:var(--muted);font-size:13px;margin-bottom:24px;">تطبيق المراسلة الفاخر</p>
+        <form id="login-form">
+          <div class="field"><label>البريد الإلكتروني</label><input id="login-email" class="input" type="email" required placeholder="name@hereapp.com" /></div>
+          <div class="field"><label>كلمة المرور</label><input id="login-pass" class="input" type="password" required placeholder="••••••••" /></div>
+          <button class="btn-gold" type="submit">تسجيل الدخول</button>
         </form>
-        <div class="auth-switch">
-          <span data-i18n="noAccount">ليس لديك حساب؟</span>
-          <button type="button" onclick="navigate('register')" data-i18n="createAcc">إنشاء حساب</button>
-        </div>
       </div>
     </section>
-
-    <section id="screen-register" class="screen">
-      <div class="topbar">
-        <h1>HereApp</h1>
-        <button class="pill-btn" onclick="toggleLang()">EN / ع</button>
-      </div>
-      <div class="auth-box">
-        <div class="logo">H</div>
-        <h2 style="text-align:center;margin-bottom:20px;" data-i18n="createAcc">إنشاء حساب جديد</h2>
-        <form onsubmit="handleRegister(event)">
-          <div class="field">
-            <label data-i18n="fullName">الاسم الكامل</label>
-            <input id="reg-name" class="input" type="text" required placeholder="أحمد علي" />
-          </div>
-          <div class="field">
-            <label data-i18n="username">اسم المستخدم @</label>
-            <input id="reg-user" class="input" type="text" required placeholder="@ahmed" />
-          </div>
-          <div class="field">
-            <label data-i18n="email">البريد الإلكتروني</label>
-            <input id="reg-email" class="input" type="email" required placeholder="name@hereapp.com" />
-          </div>
-          <div class="field">
-            <label data-i18n="password">كلمة المرور</label>
-            <input id="reg-pass" class="input" type="password" required minlength="6" placeholder="••••••••" />
-          </div>
-          <button class="btn-gold" type="submit" data-i18n="createAcc">إنشاء حساب</button>
-        </form>
-        <div class="auth-switch">
-          <span data-i18n="haveAccount">لديك حساب بالفعل؟</span>
-          <button type="button" onclick="navigate('login')" data-i18n="signIn">تسجيل الدخول</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="screen-chats" class="screen has-nav">
-      <div class="topbar">
-        <h1 data-i18n="chats">المحادثات</h1>
-        <button class="pill-btn" onclick="toggleLang()">EN / ع</button>
-      </div>
-      <div class="search-wrap">
-        <input id="chat-search" class="search-input" type="text" oninput="renderChats()" placeholder="ابحث في المحادثات..." />
-      </div>
-      <div id="chat-list" class="section"></div>
-    </section>
-
-    <section id="screen-chat-detail" class="screen">
-      <div class="topbar">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <button class="icon-btn" onclick="navigate('chats')">←</button>
-          <div id="chat-head-avatar" class="avatar" style="width:38px;height:38px;font-size:14px;">A</div>
-          <div>
-            <div id="chat-head-name" style="font-weight:800;font-size:15px;">Contact</div>
-            <div style="font-size:11px;color:var(--gold);" data-i18n="online">متصل الآن</div>
-          </div>
-        </div>
-      </div>
-      <div id="messages-box" class="messages"></div>
-      <form class="composer" onsubmit="sendMessage(event)">
-        <input id="msg-input" type="text" placeholder="اكتب رسالة..." autocomplete="off" />
-        <button class="send-btn" type="submit">➤</button>
-      </form>
-    </section>
-
-    <section id="screen-groups" class="screen has-nav">
-      <div class="topbar"><h1 data-i18n="groups">المجموعات</h1></div>
-      <div class="section">
-        <div class="card">
-          <div style="font-weight:700;">HereApp Founders Circle</div>
-          <div style="font-size:12px;color:var(--gold);margin:4px 0;">128 عضو</div>
-          <div style="font-size:13px;color:var(--muted);">المجموعة الرسمية لتحديثات HereApp.</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="screen-discover" class="screen has-nav">
-      <div class="topbar"><h1 data-i18n="discover">استكشاف</h1></div>
-      <div class="section">
-        <div class="card" style="display:flex;justify-content:space-between;align-items:center;">
-          <div>
-            <div style="font-weight:700;">طارق ناصر</div>
-            <div style="font-size:12px;color:var(--gold);">@tariq</div>
-          </div>
-          <button class="pill-btn" onclick="startChatWith('طارق ناصر')" data-i18n="messageBtn">مراسلة</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="screen-profile" class="screen has-nav">
-      <div class="topbar"><h1 data-i18n="profile">الملف الشخصي</h1></div>
-      <div class="section" style="text-align:center;">
-        <div id="prof-avatar" class="avatar" style="width:76px;height:76px;font-size:26px;margin:10px auto;">H</div>
-        <h2 id="prof-name">HereApp User</h2>
-        <div id="prof-user" style="color:var(--muted);font-size:14px;">@hereuser</div>
-        <div style="margin:6px auto;"><span class="pill-btn">✦ Founder & Owner</span></div>
-        <div class="card" style="text-align:start;margin-top:10px;">
-          <div style="font-size:12px;color:var(--muted);" data-i18n="email">البريد الإلكتروني</div>
-          <div id="prof-email" style="font-weight:700;margin-top:4px;">user@hereapp.com</div>
-        </div>
-        <button class="btn-outline" onclick="handleLogout()" data-i18n="signOut">تسجيل الخروج</button>
-      </div>
-    </section>
-
-    <button id="fab-new" class="fab" onclick="newChatPrompt()">+</button>
-
-    <nav id="bottom-nav" class="bottom-nav">
-      <button class="nav-item active" data-tab="chats" onclick="navigate('chats')"><span>💬</span><span data-i18n="chats">المحادثات</span></button>
-      <button class="nav-item" data-tab="groups" onclick="navigate('groups')"><span>👥</span><span data-i18n="groups">المجموعات</span></button>
-      <button class="nav-item" data-tab="discover" onclick="navigate('discover')"><span>✦</span><span data-i18n="discover">استكشاف</span></button>
-      <button class="nav-item" data-tab="profile" onclick="navigate('profile')"><span>👤</span><span data-i18n="profile">حسابي</span></button>
-    </nav>
   </div>
 
-  <!-- Firebase Placeholder (أضف بيانات مشروعك لاحقاً) -->
-  <script>
-    let lang = "ar";
-    let activeChatId = null;
+  <!-- Firebase Scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-    const i18n = {
-      ar: {
-        welcome: "مرحباً بك في HereApp", loginSub: "تطبيق المراسلة الفاخر", email: "البريد الإلكتروني",
-        password: "كلمة المرور", signIn: "تسجيل الدخول", createAcc: "إنشاء حساب", noAccount: "ليس لديك حساب؟",
-        haveAccount: "لديك حساب بالفعل؟", fullName: "الاسم الكامل", username: "اسم المستخدم @",
-        chats: "المحادثات", groups: "المجموعات", discover: "استكشاف", profile: "الملف الشخصي",
-        online: "متصل الآن", messageBtn: "مراسلة", signOut: "تسجيل الخروج"
-      },
-      en: {
-        welcome: "Welcome to HereApp", loginSub: "Luxury Messaging App", email: "Email",
-        password: "Password", signIn: "Sign In", createAcc: "Create Account", noAccount: "New to HereApp?",
-        haveAccount: "Already have an account?", fullName: "Full Name", username: "@Username",
-        chats: "Chats", groups: "Groups", discover: "Discover", profile: "Profile",
-        online: "Online", messageBtn: "Message", signOut: "Sign Out"
-      }
+    const firebaseConfig = {
+      apiKey: "AIzaSyCGkVEsl68ls9WxqG5y3DTz8Ll2vdSR7N8",
+      authDomain: "hereapp-66c04.firebaseapp.com",
+      projectId: "hereapp-66c04",
+      storageBucket: "hereapp-66c04.firebasestorage.app",
+      messagingSenderId: "1036280676332",
+      appId: "1:1036280676332:web:537af99e6309677ff90ac9",
+      measurementId: "G-E1L96XGDMH"
     };
 
-    const state = {
-      user: { name: "HereApp User", username: "@hereuser", email: "user@hereapp.com" },
-      chats: [
-        { id: "1", name: "ليلى المنصور", time: "2:14 PM", unread: 2, messages: [{ dir: "in", text: "أهلاً بك في HereApp!" }] },
-        { id: "2", name: "عمر خالد", time: "1:05 PM", unread: 0, messages: [{ dir: "in", text: "التصميم الأسود والذهبي رائع جداً." }] }
-      ]
-    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    function toast(msg) {
-      const el = document.getElementById("toast");
-      el.textContent = msg;
-      el.style.display = "block";
-      setTimeout(() => (el.style.display = "none"), 2200);
-    }
-
-    function toggleLang() {
-      lang = lang === "ar" ? "en" : "ar";
-      document.documentElement.lang = lang;
-      document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const k = el.getAttribute("data-i18n");
-        if (i18n[lang][k]) el.textContent = i18n[lang][k];
-      });
-    }
-
-    function navigate(id) {
-      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-      document.getElementById("screen-" + id).classList.add("active");
-      const tabs = ["chats", "groups", "discover", "profile"];
-      document.getElementById("bottom-nav").classList.toggle("visible", tabs.includes(id));
-      document.getElementById("fab-new").classList.toggle("visible", id === "chats");
-      document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("active", b.dataset.tab === id));
-    }
-
-    function syncProfile() {
-      document.getElementById("prof-avatar").textContent = state.user.name.slice(0, 2).toUpperCase();
-      document.getElementById("prof-name").textContent = state.user.name;
-      document.getElementById("prof-user").textContent = state.user.username;
-      document.getElementById("prof-email").textContent = state.user.email;
-    }
-
-    function handleLogin(e) {
+    document.getElementById('login-form').addEventListener('submit', (e) => {
       e.preventDefault();
-      const email = document.getElementById("login-email").value.trim();
-      state.user.email = email;
-      state.user.name = email.split("@")[0];
-      state.user.username = "@" + state.user.name.toLowerCase();
-      syncProfile();
-      renderChats();
-      navigate("chats");
-    }
-
-    function handleRegister(e) {
-      e.preventDefault();
-      const name = document.getElementById("reg-name").value.trim();
-      let username = document.getElementById("reg-user").value.trim();
-      if (!username.startsWith("@")) username = "@" + username;
-      const email = document.getElementById("reg-email").value.trim();
-      state.user = { name, username, email };
-      syncProfile();
-      renderChats();
-      navigate("chats");
-    }
-
-    function handleLogout() {
-      navigate("login");
-      toast(lang === "ar" ? "تم تسجيل الخروج" : "Signed out");
-    }
-
-    function renderChats() {
-      const q = (document.getElementById("chat-search")?.value || "").toLowerCase();
-      const list = document.getElementById("chat-list");
-      list.innerHTML = "";
-      state.chats.filter(c => c.name.toLowerCase().includes(q)).forEach(c => {
-        const last = c.messages[c.messages.length - 1];
-        const row = document.createElement("div");
-        row.className = "chat-row";
-        row.onclick = () => openChat(c.id);
-        row.innerHTML = `
-          <div class="avatar">${c.name.slice(0, 2).toUpperCase()}</div>
-          <div class="chat-info">
-            <div class="chat-top"><span class="chat-name">${c.name}</span><span class="chat-time">${c.time}</span></div>
-            <div style="display:flex;justify-content:space-between;gap:8px;">
-              <span class="chat-preview">${last ? last.text : ""}</span>
-              ${c.unread ? `<span class="badge">${c.unread}</span>` : ""}
-            </div>
-          </div>
-        `;
-        list.appendChild(row);
-      });
-    }
-
-    function openChat(id) {
-      activeChatId = id;
-      const chat = state.chats.find(c => c.id === id);
-      if (!chat) return;
-      chat.unread = 0;
-      document.getElementById("chat-head-avatar").textContent = chat.name.slice(0, 2).toUpperCase();
-      document.getElementById("chat-head-name").textContent = chat.name;
-      renderMessages();
-      renderChats();
-      navigate("chat-detail");
-    }
-
-    function renderMessages() {
-      const chat = state.chats.find(c => c.id === activeChatId);
-      const box = document.getElementById("messages-box");
-      box.innerHTML = "";
-      if (!chat) return;
-      chat.messages.forEach(m => {
-        const d = document.createElement("div");
-        d.className = "msg " + m.dir;
-        d.textContent = m.text;
-        box.appendChild(d);
-      });
-      box.scrollTop = box.scrollHeight;
-    }
-
-    function sendMessage(e) {
-      e.preventDefault();
-      const input = document.getElementById("msg-input");
-      const text = input.value.trim();
-      if (!text || !activeChatId) return;
-      const chat = state.chats.find(c => c.id === activeChatId);
-      chat.messages.push({ dir: "out", text });
-      chat.time = "الآن";
-      input.value = "";
-      renderMessages();
-      renderChats();
-    }
-
-    function newChatPrompt() {
-      const name = prompt(lang === "ar" ? "أدخل اسم جهة الاتصال:" : "Enter contact name:");
-      if (name && name.trim()) startChatWith(name.trim());
-    }
-
-    function startChatWith(name) {
-      let c = state.chats.find(x => x.name === name);
-      if (!c) {
-        c = { id: String(Date.now()), name, time: "الآن", unread: 0, messages: [] };
-        state.chats.unshift(c);
-      }
-      renderChats();
-      openChat(c.id);
-    }
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-pass').value;
+      
+      signInWithEmailAndPassword(auth, email, pass)
+        .then((userCredential) => {
+          alert("تم تسجيل الدخول بنجاح! أهلاً " + userCredential.email);
+        })
+        .catch((error) => {
+          alert("خطأ: " + error.message);
+        });
+    });
   </script>
 </body>
 </html>
-EOF
