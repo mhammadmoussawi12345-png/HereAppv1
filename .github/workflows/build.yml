@@ -21,34 +21,29 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '21'
+          java-version: '17'
 
-      - name: Clean and Build Capacitor App
+      - name: Build Capacitor App
         run: |
-          # 1. تنظيف شامل لأي ملفات أندرويد قديمة
           rm -rf android
           rm -rf node_modules
           rm -rf www
           
-          # 2. تجهيز مشروع Node.js
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
           
-          # 3. تجهيز ملف الويب
           mkdir www
           cp index.html www/index.html
           
-          # 4. بناء Capacitor وإضافة الأندرويد
           npx cap init HereApp com.hereapp.messenger --web-dir=www
           npx cap add android
           
-          # 5. إصلاح تعارض Kotlin داخل مشروع الأندرويد
-          echo "configurations.all { resolutionStrategy { force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22' } }" >> android/build.gradle
+          # الإصلاح السحري: تعديل ملف الـ build.gradle ليتوافق مع النسخ
+          sed -i 's/ext.kotlin_version = .*/ext.kotlin_version = "1.8.22"/' android/build.gradle || true
           
-          # 6. بناء الـ APK
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace
+          ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
