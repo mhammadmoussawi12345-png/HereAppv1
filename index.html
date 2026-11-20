@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
@@ -11,164 +11,211 @@
       --gold: #d4af37; --gold-light: #f3dc86; --gold-dim: rgba(212, 175, 55, 0.14);
       --text: #f6f3ec; --muted: #9e9788; --danger: #e25c5c;
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Arabic", sans-serif;
+      --serif: Georgia, serif;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body { background: #000; color: var(--text); font-family: var(--font); display: flex; justify-content: center; min-height: 100dvh; overflow: hidden; }
-    .app { width: 100%; max-width: 440px; height: 100dvh; background: radial-gradient(circle at top center, rgba(212, 175, 55, 0.12), transparent 46%), var(--bg); display: flex; flex-direction: column; position: relative; overflow-y: auto; }
-    .screen { display: none; flex: 1; flex-direction: column; min-height: 100%; padding: calc(18px + env(safe-area-inset-top)) 24px calc(80px + env(safe-area-inset-bottom)); animation: fadeUp 0.28s ease; }
+    .app { width: 100%; max-width: 440px; height: 100dvh; background: radial-gradient(circle at top center, rgba(212, 175, 55, 0.08), transparent 46%), var(--bg); display: flex; flex-direction: column; position: relative; overflow-y: auto; padding-bottom: 70px; }
+    
+    .screen { display: none; flex: 1; flex-direction: column; padding: calc(18px + env(safe-area-inset-top)) 24px 24px; animation: fadeUp 0.28s ease; }
     .screen.active { display: flex; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     
     .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .back-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--gold); font-size: 18px; cursor: pointer; }
-    .lang-btn { background: var(--gold-dim); color: var(--gold); border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; }
     
-    .welcome-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 12px 0; }
+    .welcome-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
     .emblem { width: 88px; height: 88px; border-radius: 26px; border: 1.5px solid var(--gold); background: linear-gradient(145deg, #211c10, #0e0d0a); color: var(--gold-light); font-size: 38px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-bottom: 22px; box-shadow: 0 14px 36px rgba(212, 175, 55, 0.24); }
-    .brand-title { font-size: 32px; font-weight: 800; letter-spacing: 0.6px; background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
-    .brand-sub { color: var(--muted); font-size: 14px; line-height: 1.65; max-width: 300px; margin-bottom: 28px; }
+    .brand-title { font-family: var(--serif); font-size: 34px; font-weight: 400; color: var(--text); margin-bottom: 10px; }
+    .brand-sub { color: var(--muted); font-size: 14px; max-width: 300px; margin-bottom: 28px; line-height: 1.5; }
     .welcome-actions { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-top: auto; }
     
-    .auth-header { margin: 12px 0 26px; }
-    .auth-header h2 { font-size: 26px; font-weight: 800; margin-bottom: 6px; color: var(--text); }
-    .auth-header p { font-size: 14px; color: var(--muted); }
     .field { margin-bottom: 16px; }
-    .field label { display: block; font-size: 12px; color: var(--gold); font-weight: 700; margin-bottom: 7px; }
-    .input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 14px 16px; border-radius: 14px; font-size: 15px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
-    .input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.14); }
-    .btn-gold { width: 100%; padding: 15px; border: none; border-radius: 14px; background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: #0a0a0a; font-size: 15px; font-weight: 800; cursor: pointer; transition: transform 0.15s, opacity 0.2s; }
-    .btn-gold:active { transform: scale(0.98); }
-    .btn-gold:disabled { opacity: 0.55; cursor: not-allowed; }
-    .btn-outline { width: 100%; padding: 14px; border-radius: 14px; background: var(--surface); border: 1px solid var(--border); color: var(--gold-light); font-size: 15px; font-weight: 700; cursor: pointer; }
-    .link-row { text-align: center; margin-top: 18px; font-size: 14px; color: var(--muted); }
-    .link-row button { background: none; border: none; color: var(--gold); font-weight: 700; cursor: pointer; margin-inline-start: 4px; }
-    .status-box { display: none; padding: 12px 14px; border-radius: 12px; font-size: 13px; margin-bottom: 14px; line-height: 1.5; }
-    .status-box.error { display: block; background: rgba(226, 92, 92, 0.12); border: 1px solid rgba(226, 92, 92, 0.45); color: #ff9c9c; }
-    .status-box.ok { display: block; background: var(--gold-dim); border: 1px solid var(--border); color: var(--gold-light); }
-
-    .avatar-upload { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; background: var(--surface); font-size: 40px; cursor: pointer; position: relative; overflow: hidden; color: var(--gold); }
-
-    /* Bottom Navigation */
-    .bottom-nav { display: flex; justify-content: space-around; background: var(--surface); border-top: 1px solid var(--border); padding: 12px 0 calc(12px + env(safe-area-inset-bottom)); position: fixed; bottom: 0; width: 100%; max-width: 440px; z-index: 100; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--muted); font-size: 11px; cursor: pointer; gap: 4px; transition: color 0.2s; }
+    .field label { display: block; font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 7px; }
+    .input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 14px 16px; border-radius: 12px; font-size: 15px; outline: none; }
+    .input:focus { border-color: var(--gold); }
+    
+    .btn-gold { width: 100%; padding: 15px; border: none; border-radius: 12px; background: var(--gold-light); color: #0a0a0a; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .btn-outline { width: 100%; padding: 14px; border-radius: 12px; background: transparent; border: 1px solid var(--border); color: var(--text); font-size: 15px; font-weight: 600; cursor: pointer; }
+    
+    /* Main App Screens */
+    .main-header { font-family: var(--serif); font-size: 28px; color: var(--text); margin-bottom: 20px; }
+    .search-bar { width: 100%; background: var(--surface); border: 1px solid var(--border); padding: 14px 16px; border-radius: 12px; color: var(--text); margin-bottom: 20px; outline: none; font-size: 14px; }
+    
+    /* Bottom Nav */
+    .bottom-nav { display: flex; justify-content: space-between; background: #0a0a0a; border-top: 1px solid var(--border); padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); position: absolute; bottom: 0; width: 100%; z-index: 100; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--muted); font-size: 10px; cursor: pointer; gap: 4px; width: 20%; }
     .nav-item.active { color: var(--gold); }
-    .nav-item span { font-size: 22px; }
+    .nav-item span { font-size: 20px; margin-bottom: 2px; }
 
-    /* Profile Screen */
-    .profile-header { text-align: center; margin-top: 20px; }
-    .profile-avatar { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--gold); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; background: var(--surface); font-size: 50px; color: var(--gold); }
-    .profile-name { font-size: 24px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
-    .profile-username { font-size: 16px; color: var(--muted); margin-bottom: 16px; }
-    .id-badge { background: var(--surface-2); color: var(--gold); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--gold); font-weight: 800; display: inline-block; font-size: 15px; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15); }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 18px; margin-bottom: 14px; margin-top: 20px; }
+    /* Profile Card */
+    .profile-banner { width: 100%; height: 120px; background: #111; border-radius: 16px; margin-bottom: -40px; position: relative; overflow: hidden; border: 1px solid var(--border); }
+    .profile-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-top: 20px; text-align: center; position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
+    .avatar { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); margin: -50px auto 10px; background: #000; display: flex; align-items: center; justify-content: center; font-size: 30px; color: var(--gold); }
+    .badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--border); color: var(--gold); padding: 4px 10px; border-radius: 20px; font-size: 11px; margin-top: 8px; }
+    
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .card p { font-size: 14px; font-weight: 600; margin: 0; }
+    .card small { color: var(--muted); font-size: 11px; }
   </style>
 </head>
 <body>
   <div class="app">
 
-    <!-- 1. WELCOME -->
+    <!-- 1. Welcome Screen -->
     <section id="screen-welcome" class="screen active">
-      <div class="top-row"><span style="color:var(--gold);font-weight:800;font-size:13px;">✦ HEREAPP</span></div>
       <div class="welcome-body">
         <div class="emblem">H</div>
         <h1 class="brand-title">HereApp</h1>
-        <p class="brand-sub">مساحتك الفاخرة والخاصة للمراسلة الفورية حول العالم بتصميم أسود وذهبي أنيق.</p>
+        <p class="brand-sub">Private, calm, global messaging designed for presence.</p>
       </div>
       <div class="welcome-actions">
-        <button class="btn-gold" onclick="showScreen('signin')">تسجيل الدخول</button>
-        <button class="btn-outline" onclick="showScreen('signup')">إنشاء حساب جديد</button>
+        <button class="btn-gold" onclick="showScreen('signin')">Sign In</button>
+        <button class="btn-outline" onclick="showScreen('signup')">Create Account</button>
       </div>
     </section>
 
-    <!-- 2. SIGN IN -->
+    <!-- 2. Sign In -->
     <section id="screen-signin" class="screen">
       <div class="top-row"><button class="back-btn" onclick="showScreen('welcome')">←</button></div>
-      <div class="auth-header"><h2>مرحباً بعودتك</h2><p>سجّل الدخول للمتابعة</p></div>
-      <div id="signin-status" class="status-box"></div>
+      <h2 style="font-family:var(--serif); margin-bottom:20px;">Sign In</h2>
       <form id="signin-form">
-        <div class="field"><label>البريد الإلكتروني</label><input id="signin-email" class="input" type="email" required placeholder="name@hereapp.com" /></div>
-        <div class="field"><label>كلمة المرور</label><input id="signin-password" class="input" type="password" required placeholder="••••••••" /></div>
-        <button id="signin-btn" class="btn-gold" type="submit">تسجيل الدخول</button>
+        <div class="field"><label>Email</label><input id="signin-email" class="input" type="email" required placeholder="name@hereapp.com" /></div>
+        <div class="field"><label>Password</label><input id="signin-password" class="input" type="password" required placeholder="••••••••" /></div>
+        <button class="btn-gold" type="submit">Sign In</button>
       </form>
-      <div class="link-row"><button type="button" id="forgot-btn">نسيت كلمة المرور؟</button></div>
-      <div class="link-row"><span>ليس لديك حساب؟</span><button type="button" onclick="showScreen('signup')">إنشاء حساب</button></div>
     </section>
 
-    <!-- 3. SIGN UP -->
+    <!-- 3. Sign Up -->
     <section id="screen-signup" class="screen">
       <div class="top-row"><button class="back-btn" onclick="showScreen('welcome')">←</button></div>
-      <div class="auth-header"><h2>إنشاء حساب</h2><p>احصل على هويتك الفريدة في HereApp</p></div>
-      <div id="signup-status" class="status-box"></div>
+      <h2 style="font-family:var(--serif); margin-bottom:20px;">Create Account</h2>
       <form id="signup-form">
-        <div class="field"><label>الاسم الكامل</label><input id="signup-name" class="input" type="text" required placeholder="الاسم الكامل" /></div>
-        <div class="field"><label>اسم المستخدم (@)</label><input id="signup-username" class="input" type="text" required placeholder="@username" /></div>
-        <div class="field"><label>البريد الإلكتروني</label><input id="signup-email" class="input" type="email" required placeholder="name@hereapp.com" /></div>
-        <div class="field"><label>كلمة المرور</label><input id="signup-password" class="input" type="password" required minlength="6" placeholder="6 أحرف على الأقل" /></div>
-        <button id="signup-btn" class="btn-gold" type="submit">إنشاء حساب</button>
+        <div class="field"><label>Name</label><input id="signup-name" class="input" type="text" required placeholder="Full Name" /></div>
+        <div class="field"><label>@Username</label><input id="signup-username" class="input" type="text" required placeholder="@username" /></div>
+        <div class="field"><label>Email</label><input id="signup-email" class="input" type="email" required placeholder="name@hereapp.com" /></div>
+        <div class="field"><label>Password</label><input id="signup-password" class="input" type="password" required minlength="6" placeholder="••••••••" /></div>
+        <button class="btn-gold" type="submit">Create Account</button>
       </form>
-      <div class="link-row"><span>لديك حساب بالفعل؟</span><button type="button" onclick="showScreen('signin')">تسجيل الدخول</button></div>
     </section>
 
-    <!-- 4. PROFILE SETUP (بدون ID) -->
+    <!-- 4. Profile Setup (ID Setup) -->
     <section id="screen-profile-setup" class="screen">
-      <div class="top-row"><h2 style="color:var(--gold);font-size:20px;">إعداد الملف الشخصي</h2></div>
-      <div style="text-align: center;">
-        <div class="avatar-upload" onclick="alert('ميزة رفع الصور رح تنضاف بالمرحلة الجاية!')"><span>+</span></div>
+      <div class="top-row"><h2 style="font-family:var(--serif); font-size:24px; color:var(--text);">Profile Setup</h2></div>
+      <div style="text-align:center; margin-top:20px;">
+        <div class="avatar" style="width:100px; height:100px; margin:0 auto; background:var(--surface); border-style:dashed;">+</div>
       </div>
       <form id="profile-form">
-        <div class="field"><label>الاسم الكامل</label><input id="prof-name" class="input" type="text" required placeholder="الاسم الكامل" /></div>
-        <div class="field"><label>اسم المستخدم (@)</label><input id="prof-username" class="input" type="text" required placeholder="مثال: hereapp" /></div>
-        <button class="btn-gold" type="submit">حفظ والمتابعة</button>
+        <div class="field"><label>Full Name</label><input id="prof-name" class="input" type="text" required placeholder="Full Name" /></div>
+        <div class="field"><label>@Username</label><input id="prof-username" class="input" type="text" required placeholder="@username" /></div>
+        <button class="btn-gold" type="submit">Save & Continue</button>
       </form>
     </section>
 
-    <!-- 5. HOME SCREEN -->
-    <section id="screen-home" class="screen">
-      <div class="top-row"><h2 style="color:var(--gold);font-size:20px;">HereApp</h2></div>
-      <div class="card" style="text-align:center; margin-top:30px;">
-        <div class="emblem" style="margin:0 auto 20px;">H</div>
-        <h2 style="color:var(--gold); margin-bottom:10px;">قريباً!</h2>
-        <p style="color:var(--muted); font-size:14px;">هنا رح تكون المحادثات تبعك.</p>
-      </div>
-      
-      <!-- الشريط السفلي -->
-      <div class="bottom-nav">
-        <div class="nav-item active"><span>💬</span>محادثات</div>
-        <div class="nav-item"><span>👥</span>مجموعات</div>
-        <div class="nav-item"><span>🔍</span>استكشاف</div>
-        <div class="nav-item" onclick="showScreen('profile')"><span>👤</span>حسابي</div>
-        <div class="nav-item" onclick="signOut(auth)"><span>⚙️</span>إعدادات</div>
+    <!-- 5. Main App Screens -->
+    <section id="screen-chats" class="screen">
+      <div class="main-header">Chats</div>
+      <input class="search-bar" placeholder="Search..." />
+      <div style="text-align:center; margin-top:50px; color:var(--muted);">
+        <div style="font-size:40px; margin-bottom:10px;">💬</div>
+        <p>No chats yet</p>
       </div>
     </section>
 
-    <!-- 6. MY PROFILE SCREEN -->
-    <section id="screen-profile" class="screen">
-      <div class="top-row">
-        <button class="back-btn" onclick="showScreen('home')">←</button>
-        <h2 style="color:var(--gold);font-size:20px;">حسابي</h2>
-        <div style="width:40px;"></div>
+    <section id="screen-groups" class="screen">
+      <div class="main-header">Groups</div>
+      <input class="search-bar" placeholder="Search..." />
+      <div style="text-align:center; margin-top:50px; color:var(--muted);">
+        <div style="font-size:40px; margin-bottom:10px;">👥</div>
+        <p>No Groups Yet</p>
       </div>
-      <div class="profile-header">
-        <div class="profile-avatar">H</div>
-        <div id="prof-display-name" class="profile-name">...</div>
-        <div id="prof-display-username" class="profile-username">@...</div>
-        <div id="prof-display-id" class="id-badge">ID: ...</div>
-      </div>
-      
-      <div class="card" style="text-align:center;">
-        <p style="color:var(--muted); font-size:13px;">هذه هويتك الرقمية الخاصة في HereApp. لا تشارك رقم الـ ID الخاص بك مع أشخاص لا تثق بهم.</p>
-      </div>
-      
-      <button class="btn-outline" style="margin-top:auto; margin-bottom:20px;" onclick="signOut(auth)">تسجيل الخروج</button>
     </section>
+
+    <section id="screen-discover" class="screen">
+      <div class="main-header">Discover</div>
+      <input class="search-bar" placeholder="Search..." />
+      <div style="text-align:center; margin-top:50px; color:var(--muted);">
+        <div style="font-size:40px; margin-bottom:10px;">🔍</div>
+        <p>Global Directory Ready</p>
+      </div>
+    </section>
+
+    <section id="screen-profile" class="screen">
+      <div class="main-header">Profile</div>
+      <div class="profile-banner" style="background: linear-gradient(180deg, #222, #0a0a0a);"></div>
+      <div class="profile-card">
+        <div class="avatar" id="prof-avatar-letter">H</div>
+        <div id="prof-name-display" style="font-size:20px; font-weight:700;">HereApp User</div>
+        <div id="prof-user-display" style="font-size:13px; color:var(--muted);">@hereapp</div>
+        <div class="badge">🛡️ Founder & Owner</div>
+        <div style="margin-top:15px; font-size:12px; color:var(--muted);">ID: <span id="prof-id-display" style="color:var(--text);">00000</span></div>
+        
+        <div style="display:flex; gap:10px; width:100%; margin-top:20px;">
+            <button class="btn-outline" style="padding:10px; font-size:12px;">My QR Code</button>
+            <button class="btn-outline" style="padding:10px; font-size:12px;">Scan QR</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:20px;">
+        <div>
+           <p>Here Bookmarks</p>
+           <small>Saved messages, folders & search</small>
+        </div>
+        <span style="color:var(--muted);">›</span>
+      </div>
+
+      <button class="btn-outline" style="margin-top:auto; margin-bottom:10px;" onclick="signOut(auth)">Sign Out</button>
+    </section>
+
+    <section id="screen-settings" class="screen">
+      <div class="main-header">Settings</div>
+      
+      <div style="color:var(--muted); font-size:11px; margin-bottom:10px;">APPEARANCE & THEME</div>
+      <div class="card" style="flex-direction:column; align-items:flex-start;">
+        <p style="margin-bottom:10px;">Theme</p>
+        <div style="display:flex; gap:10px;">
+            <span class="badge">🌙 Dark</span>
+            <span style="border:1px solid var(--border); padding:4px 10px; border-radius:20px; font-size:11px; color:var(--muted);">☀️ Light</span>
+        </div>
+      </div>
+      
+      <div class="card" style="flex-direction:column; align-items:flex-start;">
+        <p style="margin-bottom:10px;">Color Theme</p>
+        <div class="badge" style="width:100%; display:flex; justify-content:space-between;">
+            <span>🟡 Champagne Gold</span>
+            <span>✓</span>
+        </div>
+      </div>
+
+      <div style="color:var(--muted); font-size:11px; margin-top:10px; margin-bottom:10px;">LANGUAGE & REGION</div>
+      <div class="card">
+        <div>
+            <p>App Language</p>
+            <small>English · LTR</small>
+        </div>
+        <span style="color:var(--muted);">›</span>
+      </div>
+
+      <button class="btn-outline" style="margin-top:auto; margin-bottom:10px;" onclick="signOut(auth)">Sign Out</button>
+    </section>
+
+    <!-- Bottom Nav -->
+    <div id="bottom-nav" class="bottom-nav" style="display:none;">
+      <div class="nav-item active" onclick="showScreen('chats')"><span>💬</span>Chats</div>
+      <div class="nav-item" onclick="showScreen('groups')"><span>👥</span>Groups</div>
+      <div class="nav-item" onclick="showScreen('discover')"><span>🔍</span>Discover</div>
+      <div class="nav-item" onclick="showScreen('profile')"><span>👤</span>Profile</div>
+      <div class="nav-item" onclick="showScreen('settings')"><span>⚙️</span>Settings</div>
+    </div>
 
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+    // مفاتيح مشروعك
     const firebaseConfig = {
       apiKey: "AIzaSyCGkVEsl68ls9WxqG5y3DTz8Ll2vdSR7N8",
       authDomain: "hereapp-66c04.firebaseapp.com",
@@ -183,99 +230,67 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    function setStatus(id, text, type) {
-      const box = document.getElementById(id);
-      box.textContent = text;
-      box.className = "status-box " + type;
-    }
-
-    // دالة عرض شاشة الحساب وجلب البيانات
-    window.showProfile = async () => {
-        const user = auth.currentUser;
-        if (!user) return;
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            document.getElementById("prof-display-name").innerText = data.displayName || "بدون اسم";
-            document.getElementById("prof-display-username").innerText = "@" + (data.username || "user");
-            document.getElementById("prof-display-id").innerText = "ID: " + (data.hereAppId || "00000");
-        }
-        showScreen('profile');
+    window.showScreen = function(name) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      const target = document.getElementById("screen-" + name);
+      if(target) target.classList.add("active");
+      
+      const nav = document.getElementById("bottom-nav");
+      if(["chats", "groups", "discover", "profile", "settings"].includes(name)) {
+        nav.style.display = "flex";
+        document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+        const navItems = document.querySelectorAll(".nav-item");
+        if(name === 'chats') navItems[0].classList.add('active');
+        if(name === 'groups') navItems[1].classList.add('active');
+        if(name === 'discover') navItems[2].classList.add('active');
+        if(name === 'profile') { navItems[3].classList.add('active'); loadProfileData(); }
+        if(name === 'settings') navItems[4].classList.add('active');
+      } else {
+        nav.style.display = "none";
+      }
     };
 
-    // مراقبة حالة الدخول
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
+        const docSnap = await getDoc(doc(db, "users", user.uid));
         if (docSnap.exists() && docSnap.data().hereAppId) {
-          showScreen("home");
+           showScreen("chats");
         } else {
-          showScreen("profile-setup");
+           showScreen("profile-setup");
         }
       } else {
         showScreen("welcome");
       }
     });
 
-    // تسجيل الدخول
     document.getElementById("signin-form").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const btn = document.getElementById("signin-btn");
-      const email = document.getElementById("signin-email").value.trim();
+      const email = document.getElementById("signin-email").value;
       const password = document.getElementById("signin-password").value;
-      btn.disabled = true;
-      setStatus("signin-status", "جاري تسجيل الدخول...", "ok");
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-      } catch (err) {
-        setStatus("signin-status", "خطأ: تأكد من البريد الإلكتروني وكلمة المرور.", "error");
-      } finally { btn.disabled = false; }
+      try { await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert(err.message); }
     });
 
-    // نسيت كلمة المرور
-    document.getElementById("forgot-btn").addEventListener("click", async () => {
-      const email = document.getElementById("signin-email").value.trim();
-      if (!email) return setStatus("signin-status", "أدخل بريدك الإلكتروني أولاً.", "error");
-      try {
-        await sendPasswordResetEmail(auth, email);
-        setStatus("signin-status", "تم إرسال رابط إعادة تعيين كلمة المرور.", "ok");
-      } catch (err) { setStatus("signin-status", err.message, "error"); }
-    });
-
-    // إنشاء حساب
     document.getElementById("signup-form").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const btn = document.getElementById("signup-btn");
-      const displayName = document.getElementById("signup-name").value.trim();
-      const username = document.getElementById("signup-username").value.trim().replace(/^@+/, "").toLowerCase();
-      const email = document.getElementById("signup-email").value.trim();
+      const name = document.getElementById("signup-name").value;
+      const username = document.getElementById("signup-username").value.replace(/^@+/, '').toLowerCase();
+      const email = document.getElementById("signup-email").value;
       const password = document.getElementById("signup-password").value;
-      btn.disabled = true;
-      setStatus("signup-status", "جاري إنشاء الحساب...", "ok");
+      
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
-        
         let newId = "00001"; 
         if (email !== "mhammadmoussawi12345@gmail.com" && email !== "admin@hereapp.com") {
            newId = Math.floor(10000 + Math.random() * 90000).toString();
         }
-
-        await setDoc(doc(db, "users", cred.user.uid), {
-          displayName, username, email, hereAppId: newId, updatedAt: serverTimestamp()
-        }, { merge: true });
-
-      } catch (err) {
-        setStatus("signup-status", err.message, "error");
-      } finally { btn.disabled = false; }
+        await setDoc(doc(db, "users", cred.user.uid), { displayName: name, username, email, hereAppId: newId, updatedAt: serverTimestamp() });
+      } catch (err) { alert(err.message); }
     });
 
-    // حفظ البروفايل
     document.getElementById("profile-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const name = document.getElementById("prof-name").value;
-      const username = document.getElementById("prof-username").value;
+      const username = document.getElementById("prof-username").value.replace(/^@+/, '').toLowerCase();
       const user = auth.currentUser;
       if (!user) return;
 
@@ -285,21 +300,23 @@
       }
 
       try {
-        await setDoc(doc(db, "users", user.uid), {
-          displayName: name, username: username, hereAppId: newId, email: user.email, updatedAt: serverTimestamp()
-        }, { merge: true });
-        showScreen('home');
-      } catch (error) { alert("خطأ في الحفظ: " + error.message); }
+        await setDoc(doc(db, "users", user.uid), { displayName: name, username, hereAppId: newId, updatedAt: serverTimestamp() }, { merge: true });
+        showScreen('chats');
+      } catch (error) { alert("Error: " + error.message); }
     });
 
-    window.showScreen = function (name) {
-      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-      const target = document.getElementById("screen-" + name);
-      if (target) target.classList.add("active");
-      
-      // إذا فتحنا شاشة الحساب، نجيب البيانات
-      if(name === 'profile') window.showProfile();
-    };
+    async function loadProfileData() {
+      const user = auth.currentUser;
+      if(!user) return;
+      const docSnap = await getDoc(doc(db, "users", user.uid));
+      if(docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById("prof-name-display").innerText = data.displayName || "User";
+        document.getElementById("prof-user-display").innerText = "@" + (data.username || "user");
+        document.getElementById("prof-id-display").innerText = data.hereAppId || "00000";
+        document.getElementById("prof-avatar-letter").innerText = (data.displayName || "U").charAt(0).toUpperCase();
+      }
+    }
   </script>
 </body>
 </html>
