@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
@@ -17,13 +17,14 @@
     body { background: #000; color: var(--text); font-family: var(--font); display: flex; justify-content: center; min-height: 100dvh; overflow: hidden; }
     .app { width: 100%; max-width: 440px; height: 100dvh; background: radial-gradient(circle at top center, rgba(212, 175, 55, 0.08), transparent 46%), var(--bg); display: flex; flex-direction: column; position: relative; overflow-y: auto; padding-bottom: 70px; }
     
-    .screen { display: none; flex: 1; flex-direction: column; padding: calc(18px + env(safe-area-inset-top)) 24px 24px; animation: fadeUp 0.28s ease; }
+    .screen { display: none; flex: 1; flex-direction: column; padding: calc(18px + env(safe-area-inset-top)) 24px 24px; animation: fadeIn 0.3s ease; }
     .screen.active { display: flex; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     
     .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .back-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--gold); font-size: 18px; cursor: pointer; }
     
+    /* Welcome & Auth */
     .welcome-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
     .emblem { width: 88px; height: 88px; border-radius: 26px; border: 1.5px solid var(--gold); background: linear-gradient(145deg, #211c10, #0e0d0a); color: var(--gold-light); font-size: 38px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-bottom: 22px; box-shadow: 0 14px 36px rgba(212, 175, 55, 0.24); }
     .brand-title { font-family: var(--serif); font-size: 34px; font-weight: 400; color: var(--text); margin-bottom: 10px; }
@@ -38,7 +39,7 @@
     .btn-gold { width: 100%; padding: 15px; border: none; border-radius: 12px; background: var(--gold-light); color: #0a0a0a; font-size: 15px; font-weight: 700; cursor: pointer; }
     .btn-outline { width: 100%; padding: 14px; border-radius: 12px; background: transparent; border: 1px solid var(--border); color: var(--text); font-size: 15px; font-weight: 600; cursor: pointer; }
     
-    /* Main App Screens */
+    /* Main App Elements */
     .main-header { font-family: var(--serif); font-size: 28px; color: var(--text); margin-bottom: 20px; }
     .search-bar { width: 100%; background: var(--surface); border: 1px solid var(--border); padding: 14px 16px; border-radius: 12px; color: var(--text); margin-bottom: 20px; outline: none; font-size: 14px; }
     
@@ -48,12 +49,25 @@
     .nav-item.active { color: var(--gold); }
     .nav-item span { font-size: 20px; margin-bottom: 2px; }
 
-    /* Profile Card */
-    .profile-banner { width: 100%; height: 120px; background: #111; border-radius: 16px; margin-bottom: -40px; position: relative; overflow: hidden; border: 1px solid var(--border); }
+    /* Profile Elements */
+    .profile-banner { width: 100%; height: 120px; background: #111; border-radius: 16px; margin-bottom: -40px; border: 1px solid var(--border); }
     .profile-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-top: 20px; text-align: center; position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
     .avatar { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); margin: -50px auto 10px; background: #000; display: flex; align-items: center; justify-content: center; font-size: 30px; color: var(--gold); }
     .badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--border); color: var(--gold); padding: 4px 10px; border-radius: 20px; font-size: 11px; margin-top: 8px; }
+    .verified-badge { color: #1DA1F2; font-size: 16px; margin-inline-start: 5px; }
+    .owner-card { background: var(--surface-2); border: 1px solid var(--gold); border-radius: 16px; padding: 16px; margin-top: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.1); }
+    .owner-card p { color: var(--gold); font-weight: 700; font-size: 14px; }
+    .owner-card small { color: var(--muted); font-size: 11px; }
+
+    /* Chat */
+    .chat-box { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
+    .msg { max-width: 80%; padding: 10px 14px; border-radius: 14px; font-size: 14px; }
+    .msg.me { align-self: flex-end; background: var(--gold); color: #000; }
+    .msg.other { align-self: flex-start; background: var(--surface-2); border: 1px solid var(--border); }
+    .chat-input-area { display: flex; gap: 8px; margin-top: 10px; }
+    .user-card { background: var(--surface); border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
     
+    /* Settings */
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
     .card p { font-size: 14px; font-weight: 600; margin: 0; }
     .card small { color: var(--muted); font-size: 11px; }
@@ -62,7 +76,7 @@
 <body>
   <div class="app">
 
-    <!-- 1. Welcome Screen -->
+    <!-- 1. Welcome -->
     <section id="screen-welcome" class="screen active">
       <div class="welcome-body">
         <div class="emblem">H</div>
@@ -80,8 +94,8 @@
       <div class="top-row"><button class="back-btn" onclick="showScreen('welcome')">←</button></div>
       <h2 style="font-family:var(--serif); margin-bottom:20px;">Sign In</h2>
       <form id="signin-form">
-        <div class="field"><label>Email</label><input id="signin-email" class="input" type="email" required placeholder="name@hereapp.com" /></div>
-        <div class="field"><label>Password</label><input id="signin-password" class="input" type="password" required placeholder="••••••••" /></div>
+        <div class="field"><label>Email</label><input id="signin-email" class="input" type="email" required /></div>
+        <div class="field"><label>Password</label><input id="signin-password" class="input" type="password" required /></div>
         <button class="btn-gold" type="submit">Sign In</button>
       </form>
     </section>
@@ -91,63 +105,83 @@
       <div class="top-row"><button class="back-btn" onclick="showScreen('welcome')">←</button></div>
       <h2 style="font-family:var(--serif); margin-bottom:20px;">Create Account</h2>
       <form id="signup-form">
-        <div class="field"><label>Name</label><input id="signup-name" class="input" type="text" required placeholder="Full Name" /></div>
-        <div class="field"><label>@Username</label><input id="signup-username" class="input" type="text" required placeholder="@username" /></div>
-        <div class="field"><label>Email</label><input id="signup-email" class="input" type="email" required placeholder="name@hereapp.com" /></div>
-        <div class="field"><label>Password</label><input id="signup-password" class="input" type="password" required minlength="6" placeholder="••••••••" /></div>
+        <div class="field"><label>Name</label><input id="signup-name" class="input" type="text" required /></div>
+        <div class="field"><label>@Username</label><input id="signup-username" class="input" type="text" required /></div>
+        <div class="field"><label>Email</label><input id="signup-email" class="input" type="email" required /></div>
+        <div class="field"><label>Password</label><input id="signup-password" class="input" type="password" required minlength="6" /></div>
         <button class="btn-gold" type="submit">Create Account</button>
       </form>
     </section>
 
-    <!-- 4. Profile Setup (ID Setup) -->
+    <!-- 4. Profile Setup -->
     <section id="screen-profile-setup" class="screen">
       <div class="top-row"><h2 style="font-family:var(--serif); font-size:24px; color:var(--text);">Profile Setup</h2></div>
-      <div style="text-align:center; margin-top:20px;">
-        <div class="avatar" style="width:100px; height:100px; margin:0 auto; background:var(--surface); border-style:dashed;">+</div>
-      </div>
       <form id="profile-form">
-        <div class="field"><label>Full Name</label><input id="prof-name" class="input" type="text" required placeholder="Full Name" /></div>
-        <div class="field"><label>@Username</label><input id="prof-username" class="input" type="text" required placeholder="@username" /></div>
+        <div class="field"><label>Full Name</label><input id="prof-name" class="input" type="text" required /></div>
+        <div class="field"><label>@Username</label><input id="prof-username" class="input" type="text" required /></div>
         <button class="btn-gold" type="submit">Save & Continue</button>
       </form>
     </section>
 
-    <!-- 5. Main App Screens -->
+    <!-- 5. Chats (Main / Smart Inbox) -->
     <section id="screen-chats" class="screen">
-      <div class="main-header">Chats</div>
-      <input class="search-bar" placeholder="Search..." />
-      <div style="text-align:center; margin-top:50px; color:var(--muted);">
+      <div class="main-header">Smart Inbox</div>
+      <input class="search-bar" id="search-user" placeholder="ابحث برقم الـ ID (مثال: 00001)..." />
+      <button class="btn-gold" style="margin-bottom:15px;" onclick="searchUser()">بحث</button>
+      <div id="search-results"></div>
+      <div style="text-align:center; margin-top:30px; color:var(--muted);">
         <div style="font-size:40px; margin-bottom:10px;">💬</div>
-        <p>No chats yet</p>
+        <p>لا توجد محادثات حديثة</p>
       </div>
     </section>
 
-    <section id="screen-groups" class="screen">
-      <div class="main-header">Groups</div>
-      <input class="search-bar" placeholder="Search..." />
-      <div style="text-align:center; margin-top:50px; color:var(--muted);">
-        <div style="font-size:40px; margin-bottom:10px;">👥</div>
-        <p>No Groups Yet</p>
+    <!-- 6. Chat Room -->
+    <section id="screen-chat-room" class="screen">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+        <button onclick="showScreen('chats')" style="background:none; border:none; color:var(--gold); font-size:20px; cursor:pointer;">←</button>
+        <div class="main-header" style="margin:0; font-size:18px;" id="chat-title">المحادثة</div>
+      </div>
+      <div class="chat-box" id="messages-container"></div>
+      <div class="chat-input-area">
+        <input class="input" id="msg-input" placeholder="اكتب رسالة..." style="margin:0;" />
+        <button class="btn-gold" style="width:50px;" onclick="sendMessage()">➤</button>
       </div>
     </section>
 
-    <section id="screen-discover" class="screen">
-      <div class="main-header">Discover</div>
-      <input class="search-bar" placeholder="Search..." />
-      <div style="text-align:center; margin-top:50px; color:var(--muted);">
-        <div style="font-size:40px; margin-bottom:10px;">🔍</div>
-        <p>Global Directory Ready</p>
+    <!-- 7. Spaces (Placeholder) -->
+    <section id="screen-spaces" class="screen">
+      <div class="main-header">Here Spaces</div>
+      <div style="text-align:center; color:var(--muted); margin-top:50px;">
+        <div style="font-size:40px; margin-bottom:10px;">🌐</div>
+        <p>المساحات المشتركة ستظهر هنا.</p>
       </div>
     </section>
 
+    <!-- 8. Bookmarks (Placeholder) -->
+    <section id="screen-bookmarks" class="screen">
+      <div class="main-header">Here Bookmark</div>
+      <div style="text-align:center; color:var(--muted); margin-top:50px;">
+        <div style="font-size:40px; margin-bottom:10px;">🔖</div>
+        <p>الرسائل المحفوظة ستظهر هنا.</p>
+      </div>
+    </section>
+
+    <!-- 9. Profile (Owner & Verification) -->
     <section id="screen-profile" class="screen">
       <div class="main-header">Profile</div>
       <div class="profile-banner" style="background: linear-gradient(180deg, #222, #0a0a0a);"></div>
       <div class="profile-card">
         <div class="avatar" id="prof-avatar-letter">H</div>
-        <div id="prof-name-display" style="font-size:20px; font-weight:700;">HereApp User</div>
-        <div id="prof-user-display" style="font-size:13px; color:var(--muted);">@hereapp</div>
-        <div class="badge">🛡️ Founder & Owner</div>
+        
+        <div style="display:flex; align-items:center; justify-content:center;">
+            <div id="prof-name-display" style="font-size:20px; font-weight:700;">User</div>
+            <div id="verified-badge" class="verified-badge" style="display:none;">✔️</div>
+        </div>
+
+        <div id="prof-user-display" style="font-size:13px; color:var(--muted);">@user</div>
+        
+        <div id="owner-badge" class="badge" style="display:none;">🛡️ Founder & Owner</div>
+        
         <div style="margin-top:15px; font-size:12px; color:var(--muted);">ID: <span id="prof-id-display" style="color:var(--text);">00000</span></div>
         
         <div style="display:flex; gap:10px; width:100%; margin-top:20px;">
@@ -156,17 +190,18 @@
         </div>
       </div>
 
-      <div class="card" style="margin-top:20px;">
-        <div>
-           <p>Here Bookmarks</p>
-           <small>Saved messages, folders & search</small>
+      <div id="owner-panel-btn" class="owner-card" style="display:none;" onclick="alert('هنا رح تكون لوحة تحكم المالك الكاملة قريباً!')">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <p>Owner Panel · HereApp Control Center</p>
+                <small>Verification requests & Management</small>
+            </div>
+            <span style="color:var(--gold);">›</span>
         </div>
-        <span style="color:var(--muted);">›</span>
       </div>
-
-      <button class="btn-outline" style="margin-top:auto; margin-bottom:10px;" onclick="signOut(auth)">Sign Out</button>
     </section>
 
+    <!-- 10. Settings -->
     <section id="screen-settings" class="screen">
       <div class="main-header">Settings</div>
       
@@ -179,14 +214,6 @@
         </div>
       </div>
       
-      <div class="card" style="flex-direction:column; align-items:flex-start;">
-        <p style="margin-bottom:10px;">Color Theme</p>
-        <div class="badge" style="width:100%; display:flex; justify-content:space-between;">
-            <span>🟡 Champagne Gold</span>
-            <span>✓</span>
-        </div>
-      </div>
-
       <div style="color:var(--muted); font-size:11px; margin-top:10px; margin-bottom:10px;">LANGUAGE & REGION</div>
       <div class="card">
         <div>
@@ -196,26 +223,26 @@
         <span style="color:var(--muted);">›</span>
       </div>
 
-      <button class="btn-outline" style="margin-top:auto; margin-bottom:10px;" onclick="signOut(auth)">Sign Out</button>
+      <button class="btn-outline" style="margin-top:auto; margin-bottom:10px; color:var(--danger); border-color:var(--danger);" onclick="signOut(auth)">Sign Out</button>
     </section>
 
     <!-- Bottom Nav -->
     <div id="bottom-nav" class="bottom-nav" style="display:none;">
       <div class="nav-item active" onclick="showScreen('chats')"><span>💬</span>Chats</div>
-      <div class="nav-item" onclick="showScreen('groups')"><span>👥</span>Groups</div>
-      <div class="nav-item" onclick="showScreen('discover')"><span>🔍</span>Discover</div>
+      <div class="nav-item" onclick="showScreen('spaces')"><span>🌐</span>Spaces</div>
+      <div class="nav-item" onclick="showScreen('bookmarks')"><span>🔖</span>Saved</div>
       <div class="nav-item" onclick="showScreen('profile')"><span>👤</span>Profile</div>
       <div class="nav-item" onclick="showScreen('settings')"><span>⚙️</span>Settings</div>
     </div>
 
   </div>
 
+  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, addDoc, onSnapshot, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    // مفاتيح مشروعك
     const firebaseConfig = {
       apiKey: "AIzaSyCGkVEsl68ls9WxqG5y3DTz8Ll2vdSR7N8",
       authDomain: "hereapp-66c04.firebaseapp.com",
@@ -223,12 +250,17 @@
       storageBucket: "hereapp-66c04.firebasestorage.app",
       messagingSenderId: "1036280676332",
       appId: "1:1036280676332:web:537af99e6309677ff90ac9",
-      measurementId: "G-E1L96XGDMH"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+
+    // الإيميل الخاص بك كمالك
+    const OWNER_EMAIL = "mhammadmoussawi12345@gmail.com";
+
+    let currentUserId = null;
+    let currentChatId = null;
 
     window.showScreen = function(name) {
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
@@ -236,13 +268,13 @@
       if(target) target.classList.add("active");
       
       const nav = document.getElementById("bottom-nav");
-      if(["chats", "groups", "discover", "profile", "settings"].includes(name)) {
+      if(["chats", "spaces", "bookmarks", "profile", "settings"].includes(name)) {
         nav.style.display = "flex";
         document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
         const navItems = document.querySelectorAll(".nav-item");
         if(name === 'chats') navItems[0].classList.add('active');
-        if(name === 'groups') navItems[1].classList.add('active');
-        if(name === 'discover') navItems[2].classList.add('active');
+        if(name === 'spaces') navItems[1].classList.add('active');
+        if(name === 'bookmarks') navItems[2].classList.add('active');
         if(name === 'profile') { navItems[3].classList.add('active'); loadProfileData(); }
         if(name === 'settings') navItems[4].classList.add('active');
       } else {
@@ -252,6 +284,7 @@
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
+        currentUserId = user.uid;
         const docSnap = await getDoc(doc(db, "users", user.uid));
         if (docSnap.exists() && docSnap.data().hereAppId) {
            showScreen("chats");
@@ -263,6 +296,7 @@
       }
     });
 
+    // Sign In
     document.getElementById("signin-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = document.getElementById("signin-email").value;
@@ -270,6 +304,7 @@
       try { await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert(err.message); }
     });
 
+    // Sign Up
     document.getElementById("signup-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const name = document.getElementById("signup-name").value;
@@ -280,13 +315,14 @@
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         let newId = "00001"; 
-        if (email !== "mhammadmoussawi12345@gmail.com" && email !== "admin@hereapp.com") {
+        if (email !== OWNER_EMAIL && email !== "admin@hereapp.com") {
            newId = Math.floor(10000 + Math.random() * 90000).toString();
         }
         await setDoc(doc(db, "users", cred.user.uid), { displayName: name, username, email, hereAppId: newId, updatedAt: serverTimestamp() });
       } catch (err) { alert(err.message); }
     });
 
+    // Profile Setup
     document.getElementById("profile-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const name = document.getElementById("prof-name").value;
@@ -295,7 +331,7 @@
       if (!user) return;
 
       let newId = "00001"; 
-      if (user.email !== "mhammadmoussawi12345@gmail.com" && user.email !== "admin@hereapp.com") {
+      if (user.email !== OWNER_EMAIL && user.email !== "admin@hereapp.com") {
          newId = Math.floor(10000 + Math.random() * 90000).toString();
       }
 
@@ -305,6 +341,7 @@
       } catch (error) { alert("Error: " + error.message); }
     });
 
+    // Load Profile Data
     async function loadProfileData() {
       const user = auth.currentUser;
       if(!user) return;
@@ -315,8 +352,89 @@
         document.getElementById("prof-user-display").innerText = "@" + (data.username || "user");
         document.getElementById("prof-id-display").innerText = data.hereAppId || "00000";
         document.getElementById("prof-avatar-letter").innerText = (data.displayName || "U").charAt(0).toUpperCase();
+
+        if (user.email === OWNER_EMAIL) {
+            document.getElementById("verified-badge").style.display = "block";
+            document.getElementById("owner-badge").style.display = "inline-flex";
+            document.getElementById("owner-panel-btn").style.display = "block";
+        } else {
+            document.getElementById("verified-badge").style.display = "none";
+            document.getElementById("owner-badge").style.display = "none";
+            document.getElementById("owner-panel-btn").style.display = "none";
+        }
       }
     }
+
+    // Search User
+    window.searchUser = async () => {
+      const term = document.getElementById('search-user').value.trim();
+      if(!term) return;
+      const resultsDiv = document.getElementById('search-results');
+      resultsDiv.innerHTML = "جاري البحث...";
+
+      const q = query(collection(db, "users"), where("hereAppId", "==", term));
+      const snap = await getDocs(q);
+      
+      resultsDiv.innerHTML = "";
+      if(snap.empty) {
+        resultsDiv.innerHTML = "<p style='color:red;'>لا يوجد مستخدم بهذا الرقم.</p>";
+        return;
+      }
+      
+      snap.forEach((docSnap) => {
+        const data = docSnap.data();
+        const div = document.createElement('div');
+        div.className = "user-card";
+        div.innerHTML = `
+          <div>
+            <div style="font-weight:800;">${data.displayName}</div>
+            <div style="color:var(--gold); font-size:12px;">ID: ${data.hereAppId}</div>
+          </div>
+          <button class="btn-gold" style="width:auto; padding:8px 12px;" onclick="openChat('${docSnap.id}', '${data.displayName}')">دردشة</button>
+        `;
+        resultsDiv.appendChild(div);
+      });
+    };
+
+    // Open Chat
+    window.openChat = (otherId, otherName) => {
+      const ids = [currentUserId, otherId].sort();
+      currentChatId = ids.join("_");
+      
+      document.getElementById('chat-title').innerText = otherName;
+      showScreen('chat-room');
+      
+      const q = query(collection(db, "chats", currentChatId, "messages"), orderBy("createdAt", "asc"));
+      onSnapshot(q, (snapshot) => {
+        const box = document.getElementById('messages-container');
+        box.innerHTML = "";
+        snapshot.forEach((docSnap) => {
+          const msg = docSnap.data();
+          const isMe = msg.senderId === currentUserId;
+          const el = document.createElement('div');
+          el.className = `msg ${isMe ? 'me' : 'other'}`;
+          el.innerText = msg.text;
+          box.appendChild(el);
+        });
+        box.scrollTop = box.scrollHeight;
+      });
+    };
+
+    // Send Message
+    window.sendMessage = async () => {
+      const input = document.getElementById('msg-input');
+      const text = input.value.trim();
+      if(!text || !currentChatId) return;
+      
+      await addDoc(collection(db, "chats", currentChatId, "messages"), {
+        text: text,
+        senderId: currentUserId,
+        createdAt: serverTimestamp()
+      });
+      input.value = "";
+    };
+
+    window.signOut = signOut;
   </script>
 </body>
 </html>
