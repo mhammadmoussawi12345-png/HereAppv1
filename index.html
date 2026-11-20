@@ -27,31 +27,31 @@
     .btn-gold { width: 100%; padding: 14px; border: none; border-radius: 14px; background: var(--gold); color: #0a0a0a; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 8px; }
     .auth-switch { text-align: center; margin-top: 18px; font-size: 13px; color: var(--muted); }
     .auth-switch button { background: none; border: none; color: var(--gold); font-weight: 700; cursor: pointer; }
+    
+    /* الشاشات */
     .screen { display: none; }
     .screen.active { display: flex; flex-direction: column; min-height: 100%; }
 
-    /* شاشة الشات */
-    .chat-container { display: flex; flex-direction: column; height: 100%; width: 100%; max-width: 440px; margin: 0 auto; border-inline: 1px solid var(--border); }
-    .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 18px; background: var(--surface); border-bottom: 1px solid var(--border); }
-    .chat-header h3 { color: var(--gold); font-size: 16px; }
-    .chat-header button { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); padding: 5px 10px; border-radius: 10px; cursor: pointer; }
-    
-    .messages-box { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-    .msg { max-width: 80%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
-    .msg.me { align-self: flex-end; background: var(--gold); color: #0a0a0a; font-weight: 600; border-bottom-right-radius: 4px; }
-    .msg.other { align-self: flex-start; background: var(--surface-2); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
-    .msg .sender { font-size: 10px; color: #555; margin-bottom: 4px; display: block; }
-    .msg.me .sender { color: #554400; }
+    /* شاشة البروفايل */
+    .avatar-upload { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--gold); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; background: var(--surface); font-size: 40px; cursor: pointer; position: relative; overflow: hidden; }
+    .avatar-upload img { width: 100%; height: 100%; object-fit: cover; }
+    .id-badge { background: var(--surface-2); color: var(--gold); padding: 5px 12px; border-radius: 20px; border: 1px solid var(--gold); font-weight: 800; display: inline-block; margin-bottom: 20px; font-size: 14px; letter-spacing: 2px; }
 
-    .composer { display: flex; gap: 8px; padding: 12px; background: var(--surface); border-top: 1px solid var(--border); }
-    .composer input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 999px; padding: 12px 15px; color: var(--text); outline: none; }
-    .composer button { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--gold); color: #000; font-weight: bold; cursor: pointer; font-size: 18px; }
+    /* شاشة المحادثات (الشريط السفلي) */
+    .chat-screen { display: flex; flex-direction: column; height: 100dvh; }
+    .chat-header { padding: 15px 18px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .chat-header h2 { color: var(--gold); font-size: 20px; }
+    .chat-body { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--muted); }
+    .bottom-nav { display: flex; justify-content: space-around; background: var(--surface); border-top: 1px solid var(--border); padding: 10px 0; position: fixed; bottom: 0; width: 100%; max-width: 440px; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--muted); font-size: 12px; cursor: pointer; gap: 4px; }
+    .nav-item.active { color: var(--gold); }
+    .nav-item span { font-size: 20px; }
   </style>
 </head>
 <body>
   <div class="app">
     
-    <!-- شاشة تسجيل الدخول -->
+    <!-- 1. شاشة تسجيل الدخول -->
     <section id="screen-login" class="screen active">
       <div class="topbar"><h1>HereApp</h1></div>
       <div class="auth-box">
@@ -66,14 +66,13 @@
       </div>
     </section>
 
-    <!-- شاشة إنشاء حساب -->
+    <!-- 2. شاشة إنشاء حساب -->
     <section id="screen-register" class="screen">
       <div class="topbar"><h1>HereApp</h1></div>
       <div class="auth-box">
         <div class="logo">H</div>
         <h2 style="text-align:center;margin-bottom:20px;">إنشاء حساب جديد</h2>
         <form id="register-form">
-          <div class="field"><label>الاسم الكامل</label><input id="reg-name" class="input" type="text" required /></div>
           <div class="field"><label>البريد الإلكتروني</label><input id="reg-email" class="input" type="email" required /></div>
           <div class="field"><label>كلمة المرور</label><input id="reg-pass" class="input" type="password" required minlength="6" /></div>
           <button class="btn-gold" type="submit">إنشاء حساب</button>
@@ -82,20 +81,43 @@
       </div>
     </section>
 
-    <!-- شاشة المحادثة -->
-    <section id="screen-chat" class="screen">
-      <div class="chat-container">
-        <div class="chat-header">
-          <h3 id="chat-with">غرفة عامة</h3>
-          <button onclick="logout()">خروج</button>
+    <!-- 3. شاشة إعداد البروفايل -->
+    <section id="screen-profile-setup" class="screen">
+      <div class="topbar"><h1>إعداد الملف الشخصي</h1></div>
+      <div class="auth-box">
+        <div class="avatar-upload" onclick="alert('ميزة رفع الصور رح تنضاف بالمرحلة الجاية!')">
+          <span>+</span>
         </div>
-        <div id="messages-box" class="messages-box">
-          <!-- الرسائل رح تظهر هون -->
+        <div style="text-align: center;">
+          <div id="my-id-badge" class="id-badge">ID: 00001</div>
         </div>
-        <form id="chat-form" class="composer">
-          <input id="msg-input" type="text" placeholder="اكتب رسالة..." required autocomplete="off" />
-          <button type="submit">➤</button>
+        <form id="profile-form">
+          <div class="field"><label>الاسم الكامل</label><input id="prof-name" class="input" type="text" required placeholder="مثال: محمد أحمد" /></div>
+          <div class="field"><label>اسم المستخدم (@)</label><input id="prof-username" class="input" type="text" required placeholder="example_user" /></div>
+          <button class="btn-gold" type="submit">حفظ والمتابعة</button>
         </form>
+      </div>
+    </section>
+
+    <!-- 4. الشاشة الرئيسية (المحادثات) -->
+    <section id="screen-main" class="screen">
+      <div class="chat-screen">
+        <div class="chat-header">
+          <h2>المحادثات</h2>
+          <button onclick="logout()" style="background:none; border:1px solid var(--border); color:var(--text); padding:5px 10px; border-radius:8px;">خروج</button>
+        </div>
+        <div class="chat-body">
+          <p>لا توجد محادثات حالياً...</p>
+        </div>
+        
+        <!-- الشريط السفلي -->
+        <div class="bottom-nav">
+          <div class="nav-item active"><span>💬</span>محادثات</div>
+          <div class="nav-item"><span>👥</span>مجموعات</div>
+          <div class="nav-item"><span>🔍</span>استكشاف</div>
+          <div class="nav-item"><span>👤</span>حسابي</div>
+          <div class="nav-item"><span>⚙️</span>إعدادات</div>
+        </div>
       </div>
     </section>
 
@@ -104,7 +126,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCGkVEsl68ls9WxqG5y3DTz8Ll2vdSR7N8",
@@ -120,16 +142,12 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // دالة التنقل بين الشاشات
     window.toggleScreen = (screenId) => {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById('screen-' + screenId).classList.add('active');
     };
 
-    // تسجيل الخروج
-    window.logout = () => {
-      signOut(auth).then(() => toggleScreen('login'));
-    };
+    window.logout = () => signOut(auth);
 
     // إنشاء حساب
     document.getElementById('register-form').addEventListener('submit', (e) => {
@@ -138,7 +156,7 @@
       const pass = document.getElementById('reg-pass').value;
       
       createUserWithEmailAndPassword(auth, email, pass)
-        .then(() => alert("تم إنشاء الحساب بنجاح!"))
+        .then(() => alert("تم إنشاء الحساب! يلا نجهز بروفايلك."))
         .catch((error) => alert("خطأ: " + error.message));
     });
 
@@ -152,56 +170,55 @@
         .catch((error) => alert("خطأ: " + error.message));
     });
 
-    // مراقبة حالة تسجيل الدخول (إذا دخل، روح للشات)
-    onAuthStateChanged(auth, (user) => {
+    // حفظ البروفايل بقاعدة البيانات
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('prof-name').value;
+      const username = document.getElementById('prof-username').value;
+      const user = auth.currentUser;
+      if (!user) return;
+
+      // كود لتوليد رقم ID مميز (تجريبي)
+      // إحنا بنعطي أول حساب رقم 00001، وباقي الحسابات أرقام عشوائية
+      let newId = "00001"; 
+      if (user.email !== "mhammadmoussawi12345@gmail.com" && user.email !== "admin@hereapp.com") { // إيميلك كأدمن
+         newId = Math.floor(10000 + Math.random() * 90000).toString();
+      }
+
+      try {
+        await setDoc(doc(db, "users", user.uid), {
+          name: name,
+          username: username,
+          hereAppId: newId,
+          email: user.email,
+          createdAt: new Date()
+        });
+        alert("تم حفظ البروفايل بنجاح!");
+        checkUserData(user.uid); // ننقله للشاشة الرئيسية
+      } catch (error) {
+        alert("خطأ في الحفظ: " + error.message);
+      }
+    });
+
+    // التحقق من حالة الدخول والبروفايل
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        toggleScreen('chat');
-        loadMessages();
+        // إذا مسجل دخول، نتأكد إذا عنده بروفايل بقاعدة البيانات
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          // عنده بروفايل، نوديه للشات
+          toggleScreen('main');
+        } else {
+          // ما عنده بروفايل، نوديه لصفحة الإعداد
+          toggleScreen('profile-setup');
+        }
       } else {
         toggleScreen('login');
       }
     });
 
-    // تحميل الرسائل من Firestore
-    let unsubscribe = null;
-    function loadMessages() {
-      if (unsubscribe) unsubscribe(); // إلغاء التحميل القديم
-      
-      const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
-      unsubscribe = onSnapshot(q, (snapshot) => {
-        const box = document.getElementById('messages-box');
-        box.innerHTML = "";
-        snapshot.forEach((doc) => {
-          const msg = doc.data();
-          const isMe = msg.uid === auth.currentUser.uid;
-          const el = document.createElement('div');
-          el.className = `msg ${isMe ? 'me' : 'other'}`;
-          el.innerHTML = `<span class="sender">${msg.email.split('@')[0]}</span>${msg.text}`;
-          box.appendChild(el);
-        });
-        box.scrollTop = box.scrollHeight; // النزول لآخر رسالة
-      });
-    }
-
-    // إرسال رسالة
-    document.getElementById('chat-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const input = document.getElementById('msg-input');
-      const text = input.value.trim();
-      if (!text) return;
-
-      try {
-        await addDoc(collection(db, "messages"), {
-          text: text,
-          uid: auth.currentUser.uid,
-          email: auth.currentUser.email,
-          createdAt: serverTimestamp()
-        });
-        input.value = "";
-      } catch (error) {
-        alert("خطأ في الإرسال: " + error.message);
-      }
-    });
   </script>
 </body>
 </html>
