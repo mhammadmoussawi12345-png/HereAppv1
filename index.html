@@ -14,6 +14,8 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #000; color: var(--text); font-family: var(--font); display: flex; justify-content: center; min-height: 100dvh; overflow: hidden; }
     .app { width: 100%; height: 100dvh; background: var(--bg); display: flex; flex-direction: column; overflow-y: auto; }
+    
+    /* شاشات الدخول */
     .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); }
     .topbar h1 { font-size: 21px; font-weight: 800; color: var(--gold); }
     .auth-box { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 24px; max-width: 440px; margin: 0 auto; width: 100%; }
@@ -27,10 +29,28 @@
     .auth-switch button { background: none; border: none; color: var(--gold); font-weight: 700; cursor: pointer; }
     .screen { display: none; }
     .screen.active { display: flex; flex-direction: column; min-height: 100%; }
+
+    /* شاشة الشات */
+    .chat-container { display: flex; flex-direction: column; height: 100%; width: 100%; max-width: 440px; margin: 0 auto; border-inline: 1px solid var(--border); }
+    .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 18px; background: var(--surface); border-bottom: 1px solid var(--border); }
+    .chat-header h3 { color: var(--gold); font-size: 16px; }
+    .chat-header button { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); padding: 5px 10px; border-radius: 10px; cursor: pointer; }
+    
+    .messages-box { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+    .msg { max-width: 80%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
+    .msg.me { align-self: flex-end; background: var(--gold); color: #0a0a0a; font-weight: 600; border-bottom-right-radius: 4px; }
+    .msg.other { align-self: flex-start; background: var(--surface-2); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+    .msg .sender { font-size: 10px; color: #555; margin-bottom: 4px; display: block; }
+    .msg.me .sender { color: #554400; }
+
+    .composer { display: flex; gap: 8px; padding: 12px; background: var(--surface); border-top: 1px solid var(--border); }
+    .composer input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 999px; padding: 12px 15px; color: var(--text); outline: none; }
+    .composer button { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--gold); color: #000; font-weight: bold; cursor: pointer; font-size: 18px; }
   </style>
 </head>
 <body>
   <div class="app">
+    
     <!-- شاشة تسجيل الدخول -->
     <section id="screen-login" class="screen active">
       <div class="topbar"><h1>HereApp</h1></div>
@@ -61,11 +81,30 @@
         <div class="auth-switch">لديك حساب بالفعل؟ <button onclick="toggleScreen('login')">تسجيل الدخول</button></div>
       </div>
     </section>
+
+    <!-- شاشة المحادثة -->
+    <section id="screen-chat" class="screen">
+      <div class="chat-container">
+        <div class="chat-header">
+          <h3 id="chat-with">غرفة عامة</h3>
+          <button onclick="logout()">خروج</button>
+        </div>
+        <div id="messages-box" class="messages-box">
+          <!-- الرسائل رح تظهر هون -->
+        </div>
+        <form id="chat-form" class="composer">
+          <input id="msg-input" type="text" placeholder="اكتب رسالة..." required autocomplete="off" />
+          <button type="submit">➤</button>
+        </form>
+      </div>
+    </section>
+
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCGkVEsl68ls9WxqG5y3DTz8Ll2vdSR7N8",
@@ -79,12 +118,29 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
     // دالة التنقل بين الشاشات
     window.toggleScreen = (screenId) => {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById('screen-' + screenId).classList.add('active');
     };
+
+    // تسجيل الخروج
+    window.logout = () => {
+      signOut(auth).then(() => toggleScreen('login'));
+    };
+
+    // إنشاء حساب
+    document.getElementById('register-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('reg-email').value;
+      const pass = document.getElementById('reg-pass').value;
+      
+      createUserWithEmailAndPassword(auth, email, pass)
+        .then(() => alert("تم إنشاء الحساب بنجاح!"))
+        .catch((error) => alert("خطأ: " + error.message));
+    });
 
     // تسجيل الدخول
     document.getElementById('login-form').addEventListener('submit', (e) => {
@@ -93,23 +149,58 @@
       const pass = document.getElementById('login-pass').value;
       
       signInWithEmailAndPassword(auth, email, pass)
-        .then(() => alert("تم تسجيل الدخول بنجاح!"))
         .catch((error) => alert("خطأ: " + error.message));
     });
 
-    // إنشاء حساب
-    document.getElementById('register-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = document.getElementById('reg-name').value;
-      const email = document.getElementById('reg-email').value;
-      const pass = document.getElementById('reg-pass').value;
+    // مراقبة حالة تسجيل الدخول (إذا دخل، روح للشات)
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        toggleScreen('chat');
+        loadMessages();
+      } else {
+        toggleScreen('login');
+      }
+    });
+
+    // تحميل الرسائل من Firestore
+    let unsubscribe = null;
+    function loadMessages() {
+      if (unsubscribe) unsubscribe(); // إلغاء التحميل القديم
       
-      createUserWithEmailAndPassword(auth, email, pass)
-        .then(() => {
-          alert("تم إنشاء الحساب بنجاح! أهلاً " + name);
-          toggleScreen('login');
-        })
-        .catch((error) => alert("خطأ: " + error.message));
+      const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
+      unsubscribe = onSnapshot(q, (snapshot) => {
+        const box = document.getElementById('messages-box');
+        box.innerHTML = "";
+        snapshot.forEach((doc) => {
+          const msg = doc.data();
+          const isMe = msg.uid === auth.currentUser.uid;
+          const el = document.createElement('div');
+          el.className = `msg ${isMe ? 'me' : 'other'}`;
+          el.innerHTML = `<span class="sender">${msg.email.split('@')[0]}</span>${msg.text}`;
+          box.appendChild(el);
+        });
+        box.scrollTop = box.scrollHeight; // النزول لآخر رسالة
+      });
+    }
+
+    // إرسال رسالة
+    document.getElementById('chat-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('msg-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      try {
+        await addDoc(collection(db, "messages"), {
+          text: text,
+          uid: auth.currentUser.uid,
+          email: auth.currentUser.email,
+          createdAt: serverTimestamp()
+        });
+        input.value = "";
+      } catch (error) {
+        alert("خطأ في الإرسال: " + error.message);
+      }
     });
   </script>
 </body>
