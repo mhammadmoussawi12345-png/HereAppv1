@@ -1,85 +1,60 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0a" />
-  <title>HereApp</title>
-  <style>
-    :root {
-      --bg: #0a0a0a; --surface: #141414; --surface-2: #1c1c1c; --border: rgba(212, 175, 55, 0.24);
-      --gold: #d4af37; --gold-light: #f1d77a; --gold-dim: rgba(212, 175, 55, 0.14);
-      --text: #f5f2eb; --muted: #9a9488; --nav-h: 66px;
-      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Arabic", sans-serif;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { background: #000; color: var(--text); font-family: var(--font); display: flex; justify-content: center; min-height: 100vh; min-height: 100dvh; overflow: hidden; }
-    .app { width: 100%; max-width: 100%; height: 100vh; height: 100dvh; background: var(--bg); display: flex; flex-direction: column; position: relative; }
-    .screen { display: none; flex: 1; flex-direction: column; height: 100%; overflow-y: auto; animation: fadeIn 0.22s ease; }
-    .screen.active { display: flex; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    
-    .topbar { display: flex; align-items: center; justify-content: space-between; padding: calc(14px + env(safe-area-inset-top)) 18px 14px; background: rgba(10, 10, 10, 0.94); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
-    .topbar h1 { font-size: 21px; font-weight: 800; background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .auth-box { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 24px; width: 100%; max-width: 440px; margin: 0 auto; }
-    .logo { width: 68px; height: 68px; border-radius: 20px; margin: 0 auto 16px; border: 1.5px solid var(--gold); background: linear-gradient(145deg, #1d190f, #0d0c09); color: var(--gold); font-size: 28px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 28px rgba(212, 175, 55, 0.22); }
-    .field { margin-bottom: 14px; }
-    .field label { display: block; font-size: 12px; color: var(--gold); margin-bottom: 6px; font-weight: 600; }
-    .input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 13px 15px; border-radius: 14px; font-size: 15px; outline: none; }
-    .input:focus { border-color: var(--gold); }
-    .btn-gold { width: 100%; padding: 14px; border: none; border-radius: 14px; background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: #0a0a0a; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 8px; }
-    .auth-switch { text-align: center; margin-top: 18px; font-size: 13px; color: var(--muted); }
-    .auth-switch button { background: none; border: none; color: var(--gold); font-weight: 700; cursor: pointer; margin-inline-start: 4px; }
-  </style>
-</head>
-<body>
-  <div class="app">
-    <section id="screen-login" class="screen active">
-      <div class="topbar"><h1>HereApp</h1></div>
-      <div class="auth-box">
-        <div class="logo">H</div>
-        <h2 style="text-align:center;margin-bottom:6px;">مرحباً بك في HereApp</h2>
-        <p style="text-align:center;color:var(--muted);font-size:13px;margin-bottom:24px;">تطبيق المراسلة الفاخر</p>
-        <form id="login-form">
-          <div class="field"><label>البريد الإلكتروني</label><input id="login-email" class="input" type="email" required placeholder="name@hereapp.com" /></div>
-          <div class="field"><label>كلمة المرور</label><input id="login-pass" class="input" type="password" required placeholder="••••••••" /></div>
-          <button class="btn-gold" type="submit">تسجيل الدخول</button>
-        </form>
-      </div>
-    </section>
-  </div>
+name: Build HereApp APK
 
-  <!-- Firebase Scripts -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCGkVEsl68ls9WxqG5y3DTz8Ll2vdSR7N8",
-      authDomain: "hereapp-66c04.firebaseapp.com",
-      projectId: "hereapp-66c04",
-      storageBucket: "hereapp-66c04.firebasestorage.app",
-      messagingSenderId: "1036280676332",
-      appId: "1:1036280676332:web:537af99e6309677ff90ac9",
-      measurementId: "G-E1L96XGDMH"
-    };
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-    document.getElementById('login-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const pass = document.getElementById('login-pass').value;
-      
-      signInWithEmailAndPassword(auth, email, pass)
-        .then((userCredential) => {
-          alert("تم تسجيل الدخول بنجاح! أهلاً " + userCredential.user.email);
-        })
-        .catch((error) => {
-          alert("خطأ: " + error.message);
-        });
-    });
-  </script>
-</body>
-</html>
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+
+      - name: Build Capacitor App
+        run: |
+          # تنظيف شامل
+          rm -rf android
+          rm -rf node_modules
+          rm -rf www
+          
+          # تجهيز المشروع
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          
+          # تجهيز الويب
+          mkdir www
+          cp index.html www/index.html
+          
+          # بناء Capacitor
+          npx cap init HereApp com.hereapp.messenger --web-dir=www
+          npx cap add android
+          
+          # الإصلاح الجذري لتعارض الكوتلن
+          sed -i '/implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7/d' android/build.gradle
+          sed -i '/implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8/d' android/build.gradle
+          sed -i '/implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8/d' android/app/build.gradle
+          
+          echo "configurations.all { resolutionStrategy { force 'org.jetbrains.kotlin:kotlin-stdlib:1.9.20' } }" >> android/app/build.gradle
+          
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: HereApp-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
