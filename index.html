@@ -4,301 +4,249 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0a0a0a" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>HereApp</title>
   <style>
-    :root { --bg-primary: #0a0a0a; --bg-surface: #131313; --bg-elevated: #1b1a17; --bg-glass: rgba(10,10,10,0.88); --accent: #d4af37; --accent-light: #f2d984; --accent-soft: rgba(212,175,55,0.14); --border: rgba(212,175,55,0.22); --border-subtle: rgba(255,255,255,0.08); --text-primary: #f6f4ef; --text-secondary: #9c9689; --on-accent: #0a0a0a; --verified-blue: #1d9bf0; --danger: #d96262; --nav-height: 64px; --font-serif: Georgia, serif; --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; --radius-lg: 18px; --radius-md: 14px; }
-    body.theme-light { --bg-primary: #f6f3ec; --bg-surface: #ffffff; --bg-elevated: #ede8dc; --bg-glass: rgba(246,243,236,0.92); --border: rgba(145,114,34,0.24); --border-subtle: rgba(20,18,12,0.08); --text-primary: #14120e; --text-secondary: #6e6759; }
+    :root { 
+      --bg: #0a0a0a; --surface: #131313; --surface-2: #1b1a17; 
+      --accent: #d4af37; --accent-light: #f2d984; 
+      --border: rgba(212,175,55,0.22); --border-sub: rgba(255,255,255,0.08); 
+      --text: #f6f4ef; --muted: #9c9689; --nav-h: 64px; 
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      --serif: Georgia, serif; 
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; width: 100%; background-color: #050505; color: var(--text-primary); font-family: var(--font-sans); overflow: hidden; }
-    body.theme-light { background-color: #e4ded0; }
-    .app-container { width: 100%; max-width: 460px; height: 100dvh; margin: 0 auto; background-color: var(--bg-primary); position: relative; display: flex; flex-direction: column; overflow: hidden; }
-    .screen { display: none; flex: 1; flex-direction: column; height: 100%; width: 100%; overflow-y: auto; animation: screenReveal 0.24s; }
+    html, body { height: 100%; width: 100%; background: #000; color: var(--text); font-family: var(--font); overflow: hidden; }
+    .app { width: 100%; max-width: 460px; height: 100dvh; margin: 0 auto; background: var(--bg); position: relative; display: flex; flex-direction: column; overflow: hidden; }
+    .screen { display: none; flex: 1; flex-direction: column; height: 100%; overflow-y: auto; animation: fadeIn 0.25s; }
     .screen.active { display: flex; }
-    .screen.has-bottom-nav { padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 16px); }
-    @keyframes screenReveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    svg.icon { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.85; flex-shrink: 0; }
-    svg.icon-sm { width: 16px; height: 16px; }
-    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: calc(14px + env(safe-area-inset-top)) 18px 14px; background: var(--bg-glass); border-bottom: 1px solid var(--border-subtle); position: sticky; top: 0; z-index: 20; }
-    .topbar-heading { font-family: var(--font-serif); font-size: 24px; font-weight: 700; color: var(--accent); }
-    .icon-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-surface); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
-    .pill-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 700; cursor: pointer; }
-    .welcome-screen { background: radial-gradient(circle at 80% 12%, rgba(212,175,55,0.16) 0%, transparent 45%), linear-gradient(165deg, #0f0e0b 0%, #0a0a0a 55%, #070707 100%); padding: calc(18px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom)); justify-content: space-between; }
-    .welcome-top { display: flex; align-items: center; justify-content: space-between; }
-    .welcome-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px 0; }
-    .hereapp-logo-mark { width: 96px; height: 96px; border-radius: 28px; background: linear-gradient(145deg, #1d1a12, #0d0c0a); border: 1.5px solid var(--accent); display: flex; align-items: center; justify-content: center; margin-bottom: 26px; }
-    .welcome-brand-name { font-family: var(--font-serif); font-size: 38px; font-weight: 700; background: linear-gradient(135deg, var(--accent-light), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
-    .welcome-desc { font-size: 14px; color: var(--text-secondary); max-width: 290px; }
-    .welcome-actions { display: flex; flex-direction: column; gap: 12px; }
-    .btn { width: 100%; min-height: 52px; border-radius: var(--radius-md); font-size: 15px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
-    .btn-gold { border: none; background: linear-gradient(135deg, var(--accent-light), var(--accent)); color: var(--on-accent); }
-    .btn-outline { background: rgba(255,255,255,0.02); border: 1px solid var(--border); color: var(--accent); }
-    .auth-body { flex: 1; display: flex; flex-direction: column; padding: 26px 24px; }
-    .auth-title { font-family: var(--font-serif); font-size: 30px; font-weight: 700; margin-bottom: 8px; }
-    .auth-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 30px; }
-    .floating-field { position: relative; margin-bottom: 18px; }
-    .floating-input { width: 100%; height: 56px; padding: 22px 16px 8px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); color: var(--text-primary); font-size: 15px; outline: none; }
-    .floating-input:focus { border-color: var(--accent); }
-    .floating-label { position: absolute; inset-inline-start: 16px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--text-secondary); pointer-events: none; transition: all 0.18s; }
-    .floating-input:focus ~ .floating-label, .floating-input:not(:placeholder-shown) ~ .floating-label { top: 13px; font-size: 11px; font-weight: 700; color: var(--accent); }
-    .auth-switch { text-align: center; margin-top: auto; padding-top: 24px; font-size: 14px; color: var(--text-secondary); }
-    .text-link { background: none; border: none; color: var(--accent); font-weight: 700; cursor: pointer; }
-    .search-wrapper { padding: 12px 16px 8px; }
-    .search-box { display: flex; align-items: center; gap: 10px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 999px; padding: 0 16px; height: 44px; }
-    .search-input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-primary); font-size: 14px; }
-    .list-stack { display: flex; flex-direction: column; padding: 4px 10px; }
-    .chat-item { display: flex; align-items: center; gap: 14px; padding: 12px 10px; border-radius: 16px; cursor: pointer; }
-    .avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--bg-elevated); border: 1.5px solid var(--accent); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; }
-    .chat-content { flex: 1; }
-    .chat-row-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
-    .chat-name { font-size: 15.5px; font-weight: 700; }
-    .chat-time { font-size: 11.5px; color: var(--text-secondary); }
-    .chat-preview { font-size: 13.5px; color: var(--text-secondary); }
-    .section-pad { padding: 8px 16px; display: flex; flex-direction: column; gap: 12px; }
-    .card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 16px; }
-    .card-gold { background: var(--bg-elevated); border: 1px solid var(--border); }
-    .card-row { display: flex; align-items: center; justify-content: space-between; }
-    .messages-container { flex: 1; overflow-y: auto; padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; }
-    .bubble { max-width: 78%; padding: 11px 14px; border-radius: 18px; font-size: 14.5px; }
-    .msg-in { align-self: flex-start; background: var(--bg-surface); border: 1px solid var(--border-subtle); }
-    .msg-out { align-self: flex-end; background: linear-gradient(135deg, var(--accent-light), var(--accent)); color: var(--on-accent); }
-    .chat-composer { display: flex; align-items: center; gap: 10px; padding: 10px 14px calc(12px + env(safe-area-inset-bottom)); background: var(--bg-surface); border-top: 1px solid var(--border-subtle); }
-    .composer-input { flex: 1; height: 44px; background: var(--bg-primary); border: 1px solid var(--border-subtle); border-radius: 999px; padding: 0 18px; color: var(--text-primary); outline: none; }
-    .send-fab { width: 44px; height: 44px; border-radius: 50%; border: none; background: linear-gradient(135deg, var(--accent-light), var(--accent)); color: var(--on-accent); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
-    .bottom-nav { position: absolute; bottom: 0; left: 0; right: 0; height: calc(var(--nav-height) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); background: var(--bg-glass); border-top: 1px solid var(--border-subtle); display: none; grid-template-columns: repeat(5, 1fr); z-index: 30; }
-    .bottom-nav.visible { display: grid; }
-    .nav-btn { background: none; border: none; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 10.5px; font-weight: 600; cursor: pointer; }
-    .nav-btn.active { color: var(--accent); }
-    .verified-tick { width: 20px; height: 20px; color: var(--verified-blue); }
-    .founder-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px; background: var(--accent-soft); border: 1px solid var(--border); color: var(--accent); font-size: 12px; font-weight: 700; }
+    .screen.has-nav { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Icons & Topbar */
+    svg.i { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .top { display: flex; align-items: center; justify-content: space-between; padding: calc(14px + env(safe-area-inset-top)) 18px 14px; background: var(--surface); border-bottom: 1px solid var(--border-sub); position: sticky; top: 0; z-index: 20; }
+    .top h1 { font-family: var(--serif); font-size: 24px; color: var(--accent); }
+    
+    /* Buttons & Inputs */
+    .btn { width: 100%; min-height: 50px; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .btn-gold { background: linear-gradient(135deg, var(--accent-light), var(--accent)); color: #000; border: none; }
+    .btn-out { background: transparent; border: 1px solid var(--border); color: var(--accent); }
+    .auth { flex: 1; display: flex; flex-direction: column; padding: 24px; justify-content: center; }
+    .auth h2 { font-family: var(--serif); font-size: 28px; margin-bottom: 8px; }
+    .auth p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+    .field { position: relative; margin-bottom: 16px; }
+    .field input { width: 100%; height: 56px; padding: 20px 16px 6px; background: var(--surface); border: 1px solid var(--border-sub); border-radius: 12px; color: var(--text); font-size: 15px; outline: none; }
+    .field input:focus { border-color: var(--accent); }
+    .field label { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; pointer-events: none; transition: 0.2s; }
+    .field input:focus ~ label, .field input:not(:placeholder-shown) ~ label { top: 12px; font-size: 11px; color: var(--accent); font-weight: 700; }
+    
+    /* Lists & Chat */
+    .search-wrap { padding: 12px 16px; display: flex; gap: 8px; }
+    .search-wrap input { flex: 1; background: var(--surface); border: 1px solid var(--border-sub); border-radius: 999px; padding: 0 16px; color: var(--text); outline: none; height: 44px; }
+    .search-wrap button { width: 44px; height: 44px; border-radius: 50%; background: var(--accent); border: none; color: #000; font-weight: 700; cursor: pointer; }
+    .list { display: flex; flex-direction: column; padding: 8px 12px; gap: 4px; }
+    .row { display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; cursor: pointer; }
+    .row:active { background: var(--surface); }
+    .av { width: 50px; height: 50px; border-radius: 50%; background: var(--surface-2); border: 1.5px solid var(--accent); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .info { flex: 1; }
+    .info .name { font-weight: 700; font-size: 15px; }
+    .info .sub { font-size: 13px; color: var(--muted); }
+    
+    .msgs { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .bubble { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 14px; }
+    .bubble.in { align-self: flex-start; background: var(--surface); border: 1px solid var(--border-sub); border-bottom-left-radius: 4px; }
+    .bubble.out { align-self: flex-end; background: var(--accent); color: #000; border-bottom-right-radius: 4px; }
+    .composer { display: flex; gap: 8px; padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); background: var(--surface); border-top: 1px solid var(--border-sub); }
+    .composer input { flex: 1; height: 44px; background: var(--bg); border: 1px solid var(--border-sub); border-radius: 999px; padding: 0 16px; color: var(--text); outline: none; }
+    .composer button { width: 44px; height: 44px; border-radius: 50%; background: var(--accent); border: none; font-size: 18px; cursor: pointer; }
+    
+    /* Bottom Nav */
+    .nav { position: absolute; bottom: 0; left: 0; right: 0; height: calc(var(--nav-h) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); background: var(--surface); border-top: 1px solid var(--border-sub); display: none; grid-template-columns: repeat(5, 1fr); z-index: 30; }
+    .nav.vis { display: grid; }
+    .nav button { background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 10px; cursor: pointer; }
+    .nav button.on { color: var(--accent); }
+    
+    /* Welcome */
+    .welcome { background: radial-gradient(circle at top right, rgba(212,175,55,0.15), transparent 50%), var(--bg); padding: 24px; justify-content: space-between; }
+    .welcome .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .logo { width: 90px; height: 90px; border-radius: 26px; border: 1.5px solid var(--accent); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .welcome h1 { font-family: var(--serif); font-size: 36px; color: var(--accent); margin-bottom: 8px; }
   </style>
 </head>
 <body>
-  <div class="app-container" id="app-root">
-    <div id="ui-toast" class="toast-bar" style="position:absolute;top:20px;left:50%;transform:translateX(-50%);background:var(--bg-elevated);border:1px solid var(--accent);color:var(--accent);padding:9px 18px;border-radius:99px;display:none;z-index:99;"></div>
-
+  <div class="app">
+    
     <!-- 1. WELCOME -->
-    <section id="screen-welcome" class="screen welcome-screen active">
-      <div class="welcome-top"><span class="brand-tag" style="color:var(--accent);font-size:11px;letter-spacing:2.6px;">HEREAPP</span></div>
-      <div class="welcome-center">
-        <div class="hereapp-logo-mark"><svg width="46" height="46" viewBox="0 0 48 48" fill="none"><path d="M12 10V38M36 10V38M12 24H36" stroke="#D4AF37" stroke-width="3.6" stroke-linecap="round"/><circle cx="24" cy="24" r="20" stroke="#D4AF37" stroke-opacity="0.32" stroke-width="1.5"/></svg></div>
-        <h1 class="welcome-brand-name">HereApp</h1>
-        <p class="welcome-desc">An elevated private sanctuary for effortless global conversation.</p>
+    <section id="s-welcome" class="screen active welcome">
+      <div class="center">
+        <div class="logo"><svg width="46" height="46" viewBox="0 0 48 48" fill="none"><path d="M12 10V38M36 10V38M12 24H36" stroke="#D4AF37" stroke-width="3.6" stroke-linecap="round"/></svg></div>
+        <h1>HereApp</h1>
+        <p style="color:var(--muted); font-size:14px; margin-top:8px;">JUST BE HERE.</p>
       </div>
-      <div class="welcome-actions">
-        <button class="btn btn-gold" onclick="navigateTo('signin')">Sign In</button>
-        <button class="btn btn-outline" onclick="navigateTo('signup')">Create Account</button>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <button class="btn btn-gold" onclick="go('signin')">Sign In</button>
+        <button class="btn btn-out" onclick="go('signup')">Create Account</button>
       </div>
     </section>
 
     <!-- 2. SIGN IN -->
-    <section id="screen-signin" class="screen">
-      <div class="topbar">
-        <button class="icon-btn" onclick="navigateTo('welcome')">←</button>
-        <span class="topbar-heading">Sign In</span>
-        <div></div>
-      </div>
-      <div class="auth-body">
-        <h2 class="auth-title">Welcome Back</h2>
-        <p class="auth-subtitle">Enter your credentials to resume.</p>
+    <section id="s-signin" class="screen">
+      <div class="top"><button class="btn-out" style="width:40px;height:40px;padding:0;border-radius:50%;" onclick="go('welcome')">←</button><h1>Sign In</h1><div></div></div>
+      <div class="auth">
+        <h2>Welcome Back</h2><p>Enter your credentials to resume.</p>
         <form id="form-signin">
-          <div class="floating-field"><input id="input-signin-email" class="floating-input" type="email" placeholder=" " required /><label class="floating-label">Email Address</label></div>
-          <div class="floating-field"><input id="input-signin-password" class="floating-input" type="password" placeholder=" " required /><label class="floating-label">Password</label></div>
-          <button class="btn btn-gold" type="submit" style="margin-top:8px;">Sign In</button>
+          <div class="field"><input type="email" id="si-email" placeholder=" " required><label>Email Address</label></div>
+          <div class="field"><input type="password" id="si-pass" placeholder=" " required><label>Password</label></div>
+          <button class="btn btn-gold" type="submit" style="margin-top:12px;">Sign In</button>
         </form>
       </div>
     </section>
 
     <!-- 3. SIGN UP -->
-    <section id="screen-signup" class="screen">
-      <div class="topbar">
-        <button class="icon-btn" onclick="navigateTo('welcome')">←</button>
-        <span class="topbar-heading">Create Account</span>
-        <div></div>
-      </div>
-      <div class="auth-body">
-        <h2 class="auth-title">Claim Your Identity</h2>
-        <p class="auth-subtitle">Reserve your @username and receive your ID.</p>
+    <section id="s-signup" class="screen">
+      <div class="top"><button class="btn-out" style="width:40px;height:40px;padding:0;border-radius:50%;" onclick="go('welcome')">←</button><h1>Create Account</h1><div></div></div>
+      <div class="auth">
+        <h2>Claim Identity</h2><p>Reserve your @username.</p>
         <form id="form-signup">
-          <div class="floating-field"><input id="input-signup-name" class="floating-input" type="text" placeholder=" " required /><label class="floating-label">Full Name</label></div>
-          <div class="floating-field"><input id="input-signup-username" class="floating-input" type="text" placeholder=" " required /><label class="floating-label">@Username</label></div>
-          <div class="floating-field"><input id="input-signup-email" class="floating-input" type="email" placeholder=" " required /><label class="floating-label">Email Address</label></div>
-          <div class="floating-field"><input id="input-signup-password" class="floating-input" type="password" placeholder=" " required /><label class="floating-label">Password</label></div>
-          <button class="btn btn-gold" type="submit" style="margin-top:8px;">Create Account</button>
+          <div class="field"><input type="text" id="su-name" placeholder=" " required><label>Full Name</label></div>
+          <div class="field"><input type="text" id="su-user" placeholder=" " required><label>@Username</label></div>
+          <div class="field"><input type="email" id="su-email" placeholder=" " required><label>Email Address</label></div>
+          <div class="field"><input type="password" id="su-pass" placeholder=" " required><label>Password</label></div>
+          <button class="btn btn-gold" type="submit" style="margin-top:12px;">Create Account</button>
         </form>
       </div>
     </section>
 
     <!-- 4. CHATS -->
-    <section id="screen-chats" class="screen has-bottom-nav">
-      <div class="topbar"><h1 class="topbar-heading">Chats</h1></div>
-      <div class="search-wrapper">
-        <div class="search-box">
-          <input id="input-search-id" class="search-input" type="text" placeholder="Search by HereApp ID..." />
-          <button class="pill-btn" onclick="searchUser()">Search</button>
-        </div>
+    <section id="s-chats" class="screen has-nav">
+      <div class="top"><h1>Chats</h1></div>
+      <div class="search-wrap">
+        <input id="search-id" type="text" placeholder="Search HereApp ID...">
+        <button onclick="searchUser()">🔍</button>
       </div>
-      <div id="search-results" class="list-stack"></div>
-      <div id="chats-list" class="list-stack"></div>
+      <div id="results" class="list"></div>
+      <div id="chat-list" class="list"></div>
     </section>
 
     <!-- 5. CHAT ROOM -->
-    <section id="screen-chat-room" class="screen">
-      <div class="topbar">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <button class="icon-btn" onclick="navigateTo('chats')">←</button>
-          <div id="chat-room-name" style="font-weight:700;">Chat</div>
-        </div>
-      </div>
-      <div id="chat-messages" class="messages-container"></div>
-      <form id="form-send-msg" class="chat-composer">
-        <input id="input-chat-message" class="composer-input" type="text" placeholder="Type a message..." required />
-        <button class="send-fab" type="submit">➤</button>
+    <section id="s-chat" class="screen">
+      <div class="top"><button class="btn-out" style="width:40px;height:40px;padding:0;border-radius:50%;" onclick="go('chats')">←</button><h1 id="c-name">Chat</h1><div></div></div>
+      <div id="msgs" class="msgs"></div>
+      <form id="form-msg" class="composer">
+        <input id="msg-inp" type="text" placeholder="Type a message..." required>
+        <button type="submit">➤</button>
       </form>
     </section>
 
     <!-- 6. PROFILE -->
-    <section id="screen-profile" class="screen has-bottom-nav">
-      <div class="topbar"><h1 class="topbar-heading">Profile</h1></div>
-      <div class="section-pad" style="text-align:center;">
-        <div class="avatar" id="prof-avatar" style="width:90px;height:90px;font-size:32px;margin:0 auto 12px;">H</div>
-        <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
-            <h2 id="prof-name" style="font-size:24px;">HereApp Founder</h2>
-            <span id="prof-verified" class="verified-tick" style="display:none;"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#1D9BF0"/><path d="M8.5 12.3l2.3 2.3 4.8-5.1" stroke="#FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </div>
-        <div id="prof-id" style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">@founder • HR-00001</div>
-        <span id="prof-badge" class="founder-pill" style="display:none;">🛡️ Founder & Owner</span>
-      </div>
-      <div class="section-pad">
-        <button class="btn btn-outline" onclick="signOut(auth)" style="color:var(--danger); border-color:var(--danger);">Sign Out</button>
+    <section id="s-profile" class="screen has-nav">
+      <div class="top"><h1>Profile</h1></div>
+      <div style="text-align:center; padding:30px 20px;">
+        <div class="av" id="p-av" style="width:90px;height:90px;font-size:32px;margin:0 auto 16px;"></div>
+        <h2 id="p-name" style="font-size:24px;">User</h2>
+        <p id="p-id" style="color:var(--accent); font-size:14px; margin-top:4px;"></p>
+        <button class="btn btn-out" style="margin-top:30px; color:#ff6b6b; border-color:#ff6b6b;" onclick="logout()">Sign Out</button>
       </div>
     </section>
 
-    <!-- 7. SETTINGS / OTHERS -->
-    <section id="screen-settings" class="screen has-bottom-nav"><div class="topbar"><h1 class="topbar-heading">Settings</h1></div><div class="section-pad"><button class="btn btn-outline" onclick="signOut(auth)">Sign Out</button></div></section>
-    <section id="screen-groups" class="screen has-bottom-nav"><div class="topbar"><h1 class="topbar-heading">Groups</h1></div></section>
-    <section id="screen-discover" class="screen has-bottom-nav"><div class="topbar"><h1 class="topbar-heading">Discover</h1></div></section>
+    <!-- 7. OTHERS -->
+    <section id="s-groups" class="screen has-nav"><div class="top"><h1>Groups</h1></div></section>
+    <section id="s-discover" class="screen has-nav"><div class="top"><h1>Discover</h1></div></section>
+    <section id="s-settings" class="screen has-nav"><div class="top"><h1>Settings</h1></div><div style="padding:20px;"><button class="btn btn-out" onclick="logout()">Sign Out</button></div></section>
 
-    <!-- BOTTOM NAV -->
-    <nav id="bottom-nav" class="bottom-nav">
-      <button class="nav-btn active" data-tab="chats" onclick="navigateTo('chats')"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Chats</span></button>
-      <button class="nav-btn" data-tab="groups" onclick="navigateTo('groups')"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Groups</span></button>
-      <button class="nav-btn" data-tab="discover" onclick="navigateTo('discover')"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span>Discover</span></button>
-      <button class="nav-btn" data-tab="profile" onclick="navigateTo('profile')"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
-      <button class="nav-btn" data-tab="settings" onclick="navigateTo('settings')"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></button>
+    <!-- NAV -->
+    <nav id="nav" class="nav">
+      <button onclick="go('chats')" data-t="chats"><svg class="i" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chats</button>
+      <button onclick="go('groups')" data-t="groups"><svg class="i" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Groups</button>
+      <button onclick="go('discover')" data-t="discover"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Discover</button>
+      <button onclick="go('profile')" data-t="profile"><svg class="i" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
+      <button onclick="go('settings')" data-t="settings"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</button>
     </nav>
   </div>
 
-  <!-- FIREBASE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, addDoc, onSnapshot, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    const firebaseConfig = { apiKey: "AIzaSyCGkVEsl68ls9WxqG5y3DTz8Ll2vdSR7N8", authDomain: "hereapp-66c04.firebaseapp.com", projectId: "hereapp-66c04", storageBucket: "hereapp-66c04.firebasestorage.app", messagingSenderId: "1036280676332", appId: "1:1036280676332:web:537af99e6309677ff90ac9" };
-    const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
-    const OWNER_EMAIL = "mhammadmoussawi12345@gmail.com";
-    let currentUserId = null; let currentChatId = null;
+    const fc = { apiKey: "AIzaSyCGkVEsl68ls9WxqG5y3DTz8Ll2vdSR7N8", authDomain: "hereapp-66c04.firebaseapp.com", projectId: "hereapp-66c04", storageBucket: "hereapp-66c04.firebasestorage.app", messagingSenderId: "1036280676332", appId: "1:1036280676332:web:537af99e6309677ff90ac9" };
+    const app = initializeApp(fc); const auth = getAuth(app); const db = getFirestore(app);
+    const OWNER = "mhammadmoussawi12345@gmail.com";
+    let uid = null, chatId = null;
 
-    window.navigateTo = function(screenId) {
-      document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
-      const target = document.getElementById("screen-" + screenId);
-      if (target) target.classList.add("active");
-      const showNav = ["chats", "groups", "discover", "profile", "settings"].includes(screenId);
-      document.getElementById("bottom-nav").classList.toggle("visible", showNav);
-      document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.tab === screenId));
+    window.go = (s) => {
+      document.querySelectorAll('.screen').forEach(e => e.classList.remove('active'));
+      document.getElementById('s-' + s).classList.add('active');
+      const nav = ['chats','groups','discover','profile','settings'].includes(s);
+      document.getElementById('nav').classList.toggle('vis', nav);
+      document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('on', b.dataset.t === s));
     };
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        currentUserId = user.uid;
-        const docSnap = await getDoc(doc(db, "users", user.uid));
-        if (docSnap.exists()) {
-           const data = docSnap.data();
-           document.getElementById("prof-name").innerText = data.displayName || "User";
-           document.getElementById("prof-id").innerText = "@" + data.username + " • " + data.hereAppId;
-           document.getElementById("prof-avatar").innerText = (data.displayName || "U").charAt(0).toUpperCase();
-           if (user.email === OWNER_EMAIL) {
-               document.getElementById("prof-verified").style.display = "block";
-               document.getElementById("prof-badge").style.display = "inline-flex";
-           }
+    onAuthStateChanged(auth, async (u) => {
+      if (u) {
+        uid = u.uid;
+        const d = await getDoc(doc(db, "users", u.uid));
+        if (d.exists()) {
+          document.getElementById('p-name').innerText = d.data().displayName;
+          document.getElementById('p-id').innerText = "@" + d.data().username + " • ID: " + d.data().hereAppId;
+          document.getElementById('p-av').innerText = d.data().displayName.charAt(0);
         }
-        navigateTo("chats");
-      } else {
-        navigateTo("welcome");
-      }
+        go('chats');
+      } else { go('welcome'); }
     });
 
-    document.getElementById("form-signin").addEventListener("submit", async (e) => {
+    document.getElementById('form-signin').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById("input-signin-email").value;
-      const pass = document.getElementById("input-signin-password").value;
-      try { await signInWithEmailAndPassword(auth, email, pass); } catch(err) { alert(err.message); }
+      try { await signInWithEmailAndPassword(auth, document.getElementById('si-email').value, document.getElementById('si-pass').value); }
+      catch(err) { alert(err.message); }
     });
 
-    document.getElementById("form-signup").addEventListener("submit", async (e) => {
+    document.getElementById('form-signup').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name = document.getElementById("input-signup-name").value;
-      const username = document.getElementById("input-signup-username").value.replace(/^@+/, '').toLowerCase();
-      const email = document.getElementById("input-signup-email").value;
-      const pass = document.getElementById("input-signup-password").value;
+      const email = document.getElementById('su-email').value;
       try {
-        const cred = await createUserWithEmailAndPassword(auth, email, pass);
-        let newId = (email === OWNER_EMAIL) ? "00001" : Math.floor(10000 + Math.random() * 90000).toString();
-        await setDoc(doc(db, "users", cred.user.uid), { displayName: name, username, email, hereAppId: newId, updatedAt: serverTimestamp() });
+        const c = await createUserWithEmailAndPassword(auth, email, document.getElementById('su-pass').value);
+        const id = email === OWNER ? "00001" : Math.floor(10000 + Math.random() * 90000).toString();
+        await setDoc(doc(db, "users", c.user.uid), { displayName: document.getElementById('su-name').value, username: document.getElementById('su-user').value.replace('@',''), hereAppId: id, email: email });
       } catch(err) { alert(err.message); }
     });
 
     window.searchUser = async () => {
-      const term = document.getElementById('input-search-id').value.trim();
-      if(!term) return;
-      const resultsDiv = document.getElementById('search-results');
-      resultsDiv.innerHTML = "Searching...";
-      const q = query(collection(db, "users"), where("hereAppId", "==", term));
-      const snap = await getDocs(q);
-      resultsDiv.innerHTML = "";
-      if(snap.empty) { resultsDiv.innerHTML = "<p style='color:red;'>No user found.</p>"; return; }
-      snap.forEach((docSnap) => {
-        const data = docSnap.data();
-        const div = document.createElement('div');
-        div.className = "chat-item";
-        div.innerHTML = `<div class="avatar">${data.displayName.slice(0,2)}</div><div class="chat-content"><div class="chat-row-top"><span class="chat-name">${data.displayName}</span></div><div class="chat-preview">ID: ${data.hereAppId}</div></div><button class="pill-btn" onclick="openChat('${docSnap.id}', '${data.displayName}')">Chat</button>`;
-        resultsDiv.appendChild(div);
+      const t = document.getElementById('search-id').value.trim();
+      if(!t) return;
+      const r = document.getElementById('results'); r.innerHTML = "Searching...";
+      const q = query(collection(db, "users"), where("hereAppId", "==", t));
+      const s = await getDocs(q); r.innerHTML = "";
+      if(s.empty) { r.innerHTML = "<p style='color:red'>Not found.</p>"; return; }
+      s.forEach(d => {
+        const data = d.data();
+        r.innerHTML = `<div class="row" onclick="openChat('${d.id}', '${data.displayName}')"><div class="av">${data.displayName.charAt(0)}</div><div class="info"><div class="name">${data.displayName}</div><div class="sub">ID: ${data.hereAppId}</div></div></div>`;
       });
     };
 
-    window.openChat = (otherId, otherName) => {
-      const ids = [currentUserId, otherId].sort();
-      currentChatId = ids.join("_");
-      document.getElementById('chat-room-name').innerText = otherName;
-      navigateTo('chat-room');
-      const q = query(collection(db, "chats", currentChatId, "messages"), orderBy("createdAt", "asc"));
-      onSnapshot(q, (snapshot) => {
-        const box = document.getElementById('chat-messages');
-        box.innerHTML = "";
-        snapshot.forEach((docSnap) => {
-          const msg = docSnap.data();
-          const isMe = msg.senderId === currentUserId;
-          const el = document.createElement('div');
-          el.className = `bubble ${isMe ? 'msg-out' : 'msg-in'}`;
-          el.innerText = msg.text;
-          box.appendChild(el);
+    window.openChat = (oid, name) => {
+      chatId = [uid, oid].sort().join("_");
+      document.getElementById('c-name').innerText = name;
+      go('chat');
+      onSnapshot(query(collection(db, "chats", chatId, "messages"), orderBy("createdAt", "asc")), (snap) => {
+        const box = document.getElementById('msgs'); box.innerHTML = "";
+        snap.forEach(d => {
+          const m = d.data();
+          box.innerHTML += `<div class="bubble ${m.senderId === uid ? 'out' : 'in'}">${m.text}</div>`;
         });
         box.scrollTop = box.scrollHeight;
       });
     };
 
-    document.getElementById("form-send-msg").addEventListener("submit", async (e) => {
+    document.getElementById('form-msg').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const input = document.getElementById('input-chat-message');
-      const text = input.value.trim();
-      if(!text || !currentChatId) return;
-      await addDoc(collection(db, "chats", currentChatId, "messages"), { text: text, senderId: currentUserId, createdAt: serverTimestamp() });
-      input.value = "";
+      const i = document.getElementById('msg-inp');
+      if(!i.value.trim() || !chatId) return;
+      await addDoc(collection(db, "chats", chatId, "messages"), { text: i.value, senderId: uid, createdAt: serverTimestamp() });
+      i.value = "";
     });
 
-    window.signOut = signOut;
+    window.logout = () => signOut(auth);
   </script>
 </body>
 </html>
