@@ -11,8 +11,6 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -27,24 +25,21 @@ jobs:
 
       - name: Build Capacitor App
         run: |
-          # تنظيف أي ملفات أندرويد قديمة عشان ما تتعارض
+          # نمسح أي ملفات أندرويد قديمة عشان ما تتعارض
           rm -rf android
           rm -rf node_modules
-          rm -rf www
           
-          # تجهيز المشروع من الصفر
+          # نجهز المشروع
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
           
-          # عمل مجلد www ونقل ملف التصميم جواه
+          # نعمل مجلد www وننقل ملف الـ html
           mkdir www
-          mv index.html www/ || cp index.html www/
+          mv index.html www/index.html
           
-          # تهيئة Capacitor وبناء الأندرويد
+          # نعمل مشروع أندرويد ونبني الـ APK
           npx cap init HereApp com.hereapp.messenger --web-dir=www
           npx cap add android
-          
-          # بناء APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
