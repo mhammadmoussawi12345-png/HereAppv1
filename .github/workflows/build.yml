@@ -25,25 +25,30 @@ jobs:
 
       - name: Clean and Build Capacitor App
         run: |
-          # حذف الملفات القديمة لتفادي التعارض
+          # 1. تنظيف شامل لأي ملفات أندرويد قديمة
           rm -rf android
           rm -rf node_modules
           rm -rf www
           
-          # تجهيز المشروع
+          # 2. تجهيز مشروع Node.js
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
           
-          # تجهيز مجلد الويب
+          # 3. تجهيز ملف الويب
           mkdir www
           cp index.html www/index.html
           
-          # بناء الأندرويد
+          # 4. بناء Capacitor وإضافة الأندرويد
           npx cap init HereApp com.hereapp.messenger --web-dir=www
           npx cap add android
+          
+          # 5. إصلاح تعارض Kotlin داخل مشروع الأندرويد
+          echo "configurations.all { resolutionStrategy { force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22' } }" >> android/build.gradle
+          
+          # 6. بناء الـ APK
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
