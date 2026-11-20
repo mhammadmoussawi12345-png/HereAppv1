@@ -23,21 +23,22 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Build Capacitor App
+      - name: Clean and Build Capacitor App
         run: |
-          # نمسح أي ملفات أندرويد قديمة عشان ما تتعارض
+          # حذف الملفات القديمة لتفادي التعارض
           rm -rf android
           rm -rf node_modules
+          rm -rf www
           
-          # نجهز المشروع
+          # تجهيز المشروع
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
           
-          # نعمل مجلد www وننقل ملف الـ html
+          # تجهيز مجلد الويب
           mkdir www
-          mv index.html www/index.html
+          cp index.html www/index.html
           
-          # نعمل مشروع أندرويد ونبني الـ APK
+          # بناء الأندرويد
           npx cap init HereApp com.hereapp.messenger --web-dir=www
           npx cap add android
           cd android
