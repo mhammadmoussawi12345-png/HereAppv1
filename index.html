@@ -8,51 +8,64 @@
   <style>
     :root {
       --bg: #0a0a0a; --surface: #141414; --surface-2: #1c1c1c; --border: rgba(212, 175, 55, 0.24);
-      --gold: #d4af37; --gold-light: #f1d77a; --gold-dim: rgba(212, 175, 55, 0.14);
-      --text: #f5f2eb; --muted: #9a9488; --nav-h: 66px;
+      --gold: #d4af37; --gold-light: #f1d77a; --text: #f5f2eb; --muted: #9a9488;
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Arabic", sans-serif;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { background: #000; color: var(--text); font-family: var(--font); display: flex; justify-content: center; min-height: 100vh; min-height: 100dvh; overflow: hidden; }
-    .app { width: 100%; max-width: 100%; height: 100vh; height: 100dvh; background: var(--bg); display: flex; flex-direction: column; position: relative; }
-    .screen { display: none; flex: 1; flex-direction: column; height: 100%; overflow-y: auto; animation: fadeIn 0.22s ease; }
-    .screen.active { display: flex; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    
-    .topbar { display: flex; align-items: center; justify-content: space-between; padding: calc(14px + env(safe-area-inset-top)) 18px 14px; background: rgba(10, 10, 10, 0.94); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
-    .topbar h1 { font-size: 21px; font-weight: 800; background: linear-gradient(135deg, var(--gold-light), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .auth-box { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 24px; width: 100%; max-width: 440px; margin: 0 auto; }
-    .logo { width: 68px; height: 68px; border-radius: 20px; margin: 0 auto 16px; border: 1.5px solid var(--gold); background: linear-gradient(145deg, #1d190f, #0d0c09); color: var(--gold); font-size: 28px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 28px rgba(212, 175, 55, 0.22); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #000; color: var(--text); font-family: var(--font); display: flex; justify-content: center; min-height: 100dvh; overflow: hidden; }
+    .app { width: 100%; height: 100dvh; background: var(--bg); display: flex; flex-direction: column; overflow-y: auto; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+    .topbar h1 { font-size: 21px; font-weight: 800; color: var(--gold); }
+    .auth-box { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 24px; max-width: 440px; margin: 0 auto; width: 100%; }
+    .logo { width: 68px; height: 68px; border-radius: 20px; margin: 0 auto 16px; border: 1.5px solid var(--gold); color: var(--gold); font-size: 28px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
     .field { margin-bottom: 14px; }
     .field label { display: block; font-size: 12px; color: var(--gold); margin-bottom: 6px; font-weight: 600; }
     .input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 13px 15px; border-radius: 14px; font-size: 15px; outline: none; }
     .input:focus { border-color: var(--gold); }
-    .btn-gold { width: 100%; padding: 14px; border: none; border-radius: 14px; background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: #0a0a0a; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 8px; }
+    .btn-gold { width: 100%; padding: 14px; border: none; border-radius: 14px; background: var(--gold); color: #0a0a0a; font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 8px; }
     .auth-switch { text-align: center; margin-top: 18px; font-size: 13px; color: var(--muted); }
-    .auth-switch button { background: none; border: none; color: var(--gold); font-weight: 700; cursor: pointer; margin-inline-start: 4px; }
+    .auth-switch button { background: none; border: none; color: var(--gold); font-weight: 700; cursor: pointer; }
+    .screen { display: none; }
+    .screen.active { display: flex; flex-direction: column; min-height: 100%; }
   </style>
 </head>
 <body>
   <div class="app">
+    <!-- شاشة تسجيل الدخول -->
     <section id="screen-login" class="screen active">
       <div class="topbar"><h1>HereApp</h1></div>
       <div class="auth-box">
         <div class="logo">H</div>
         <h2 style="text-align:center;margin-bottom:6px;">مرحباً بك في HereApp</h2>
-        <p style="text-align:center;color:var(--muted);font-size:13px;margin-bottom:24px;">تطبيق المراسلة الفاخر</p>
         <form id="login-form">
-          <div class="field"><label>البريد الإلكتروني</label><input id="login-email" class="input" type="email" required placeholder="name@hereapp.com" /></div>
-          <div class="field"><label>كلمة المرور</label><input id="login-pass" class="input" type="password" required placeholder="••••••••" /></div>
+          <div class="field"><label>البريد الإلكتروني</label><input id="login-email" class="input" type="email" required /></div>
+          <div class="field"><label>كلمة المرور</label><input id="login-pass" class="input" type="password" required /></div>
           <button class="btn-gold" type="submit">تسجيل الدخول</button>
         </form>
+        <div class="auth-switch">ليس لديك حساب؟ <button onclick="toggleScreen('register')">إنشاء حساب</button></div>
+      </div>
+    </section>
+
+    <!-- شاشة إنشاء حساب -->
+    <section id="screen-register" class="screen">
+      <div class="topbar"><h1>HereApp</h1></div>
+      <div class="auth-box">
+        <div class="logo">H</div>
+        <h2 style="text-align:center;margin-bottom:20px;">إنشاء حساب جديد</h2>
+        <form id="register-form">
+          <div class="field"><label>الاسم الكامل</label><input id="reg-name" class="input" type="text" required /></div>
+          <div class="field"><label>البريد الإلكتروني</label><input id="reg-email" class="input" type="email" required /></div>
+          <div class="field"><label>كلمة المرور</label><input id="reg-pass" class="input" type="password" required minlength="6" /></div>
+          <button class="btn-gold" type="submit">إنشاء حساب</button>
+        </form>
+        <div class="auth-switch">لديك حساب بالفعل؟ <button onclick="toggleScreen('login')">تسجيل الدخول</button></div>
       </div>
     </section>
   </div>
 
-  <!-- Firebase Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCGkVEsl68ls9WxqG5y3DTz8Ll2vdSR7N8",
@@ -67,18 +80,36 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
+    // دالة التنقل بين الشاشات
+    window.toggleScreen = (screenId) => {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-' + screenId).classList.add('active');
+    };
+
+    // تسجيل الدخول
     document.getElementById('login-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const email = document.getElementById('login-email').value;
       const pass = document.getElementById('login-pass').value;
       
       signInWithEmailAndPassword(auth, email, pass)
-        .then((userCredential) => {
-          alert("تم تسجيل الدخول بنجاح! أهلاً " + userCredential.email);
+        .then(() => alert("تم تسجيل الدخول بنجاح!"))
+        .catch((error) => alert("خطأ: " + error.message));
+    });
+
+    // إنشاء حساب
+    document.getElementById('register-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value;
+      const email = document.getElementById('reg-email').value;
+      const pass = document.getElementById('reg-pass').value;
+      
+      createUserWithEmailAndPassword(auth, email, pass)
+        .then(() => {
+          alert("تم إنشاء الحساب بنجاح! أهلاً " + name);
+          toggleScreen('login');
         })
-        .catch((error) => {
-          alert("خطأ: " + error.message);
-        });
+        .catch((error) => alert("خطأ: " + error.message));
     });
   </script>
 </body>
