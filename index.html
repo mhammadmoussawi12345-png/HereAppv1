@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
@@ -8,229 +8,286 @@
   <style>
     :root {
       --bg: #0a0a0a; --surface: #141414; --surface-2: #1c1a15; --border: rgba(212, 175, 55, 0.28);
-      --gold: #d4af37; --gold-light: #f3dc86; --gold-dim: rgba(212, 175, 55, 0.14);
-      --text: #f6f3ec; --muted: #9e9788; --danger: #e25c5c;
-      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Arabic", sans-serif;
+      --gold: #d4af37; --gold-light: #f3dc86; --text: #f6f3ec; --muted: #9e9788; --danger: #e25c5c;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --serif: Georgia, serif;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body { background: #000; color: var(--text); font-family: var(--font); display: flex; justify-content: center; min-height: 100dvh; overflow: hidden; }
-    .app { width: 100%; max-width: 440px; height: 100dvh; background: radial-gradient(circle at top center, rgba(212, 175, 55, 0.08), transparent 46%), var(--bg); display: flex; flex-direction: column; position: relative; overflow-y: auto; padding-bottom: 70px; }
+    .app { width: 100%; max-width: 440px; height: 100dvh; background: var(--bg); display: flex; flex-direction: column; position: relative; overflow-y: auto; }
     
-    .screen { display: none; flex: 1; flex-direction: column; padding: calc(18px + env(safe-area-inset-top)) 24px 24px; animation: fadeIn 0.3s ease; }
+    .screen { display: none; flex: 1; flex-direction: column; padding: 20px; animation: fadeIn 0.3s ease; }
     .screen.active { display: flex; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     
-    .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .back-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--gold); font-size: 18px; cursor: pointer; }
+    /* Welcome Screen */
+    .welcome-screen { padding: 0; }
+    .welcome-header { display: flex; justify-content: space-between; padding: 20px; position: absolute; top: 0; width: 100%; z-index: 10; }
+    .welcome-img { width: 100%; height: 40vh; object-fit: cover; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; opacity: 0.8; }
+    .welcome-content { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; text-align: center; margin-top: -50px; z-index: 2; }
+    .logo-box { width: 80px; height: 80px; border-radius: 20px; border: 1px solid var(--border); background: #0a0a0a; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 40px; color: var(--gold); margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+    .brand-title { font-family: var(--serif); font-size: 36px; color: #fff; margin-bottom: 5px; }
+    .brand-sub { color: var(--gold); font-size: 12px; letter-spacing: 2px; margin-bottom: 20px; }
+    .desc { color: var(--muted); font-size: 14px; line-height: 1.5; margin-bottom: 30px; }
     
-    /* Welcome & Auth */
-    .welcome-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-    .emblem { width: 88px; height: 88px; border-radius: 26px; border: 1.5px solid var(--gold); background: linear-gradient(145deg, #211c10, #0e0d0a); color: var(--gold-light); font-size: 38px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-bottom: 22px; box-shadow: 0 14px 36px rgba(212, 175, 55, 0.24); }
-    .brand-title { font-family: var(--serif); font-size: 34px; font-weight: 400; color: var(--text); margin-bottom: 10px; }
-    .brand-sub { color: var(--muted); font-size: 14px; max-width: 300px; margin-bottom: 28px; line-height: 1.5; }
-    .welcome-actions { width: 100%; display: flex; flex-direction: column; gap: 12px; margin-top: auto; }
+    /* Auth Screens */
+    .auth-header { font-size: 22px; font-weight: 500; margin-bottom: 25px; color: #fff; display: flex; align-items: center; gap: 15px; }
+    .back-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
+    .status-box { display: none; padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 15px; line-height: 1.4; border: 1px solid rgba(226, 92, 92, 0.4); background: rgba(226, 92, 92, 0.1); color: #ff9c9c; }
+    .status-box.error { display: block; }
     
-    .field { margin-bottom: 16px; }
-    .field label { display: block; font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 7px; }
-    .input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 14px 16px; border-radius: 12px; font-size: 15px; outline: none; }
-    .input:focus { border-color: var(--gold); }
+    .input-group { position: relative; margin-bottom: 20px; }
+    .input-group label { position: absolute; top: -8px; left: 15px; background: var(--bg); padding: 0 5px; color: var(--gold); font-size: 12px; }
+    .input-group input { width: 100%; background: transparent; border: 1px solid var(--border); color: #fff; padding: 15px; border-radius: 12px; font-size: 15px; outline: none; }
+    .input-group input:focus { border-color: var(--gold); }
     
-    .btn-gold { width: 100%; padding: 15px; border: none; border-radius: 12px; background: var(--gold-light); color: #0a0a0a; font-size: 15px; font-weight: 700; cursor: pointer; }
-    .btn-outline { width: 100%; padding: 14px; border-radius: 12px; background: transparent; border: 1px solid var(--border); color: var(--text); font-size: 15px; font-weight: 600; cursor: pointer; }
+    .btn-gold { width: 100%; padding: 15px; border: none; border-radius: 12px; background: var(--gold); color: #000; font-weight: 700; font-size: 15px; cursor: pointer; }
+    .btn-outline { width: 100%; padding: 15px; border-radius: 12px; background: transparent; border: 1px solid var(--border); color: #fff; font-weight: 600; font-size: 15px; cursor: pointer; }
     
-    /* Main App Elements */
+    /* Main App & Nav */
     .main-header { font-family: var(--serif); font-size: 28px; color: var(--text); margin-bottom: 20px; }
-    .search-bar { width: 100%; background: var(--surface); border: 1px solid var(--border); padding: 14px 16px; border-radius: 12px; color: var(--text); margin-bottom: 20px; outline: none; font-size: 14px; }
-    
-    /* Bottom Nav */
-    .bottom-nav { display: flex; justify-content: space-between; background: #0a0a0a; border-top: 1px solid var(--border); padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); position: absolute; bottom: 0; width: 100%; z-index: 100; }
+    .bottom-nav { display: flex; justify-content: space-between; background: #0a0a0a; border-top: 1px solid var(--border); padding: 8px 5px calc(8px + env(safe-area-inset-bottom)); position: absolute; bottom: 0; width: 100%; z-index: 100; }
     .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--muted); font-size: 10px; cursor: pointer; gap: 4px; width: 20%; }
     .nav-item.active { color: var(--gold); }
     .nav-item span { font-size: 20px; margin-bottom: 2px; }
-
-    /* Profile Elements */
-    .profile-banner { width: 100%; height: 120px; background: #111; border-radius: 16px; margin-bottom: -40px; border: 1px solid var(--border); }
+    
+    /* Profile & Others */
+    .profile-banner { width: 100%; height: 140px; background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop') center/cover; border-radius: 16px; margin-bottom: -40px; border: 1px solid var(--border); }
     .profile-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-top: 20px; text-align: center; position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
     .avatar { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); margin: -50px auto 10px; background: #000; display: flex; align-items: center; justify-content: center; font-size: 30px; color: var(--gold); }
-    .badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--border); color: var(--gold); padding: 4px 10px; border-radius: 20px; font-size: 11px; margin-top: 8px; }
     .verified-badge { color: #1DA1F2; font-size: 16px; margin-inline-start: 5px; }
-    .owner-card { background: var(--surface-2); border: 1px solid var(--gold); border-radius: 16px; padding: 16px; margin-top: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.1); }
-    .owner-card p { color: var(--gold); font-weight: 700; font-size: 14px; }
-    .owner-card small { color: var(--muted); font-size: 11px; }
+    .owner-badge { background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold); color: var(--gold); padding: 4px 10px; border-radius: 20px; font-size: 11px; margin-top: 8px; }
+    
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .card p { font-size: 14px; font-weight: 600; margin: 0; }
+    .card small { color: var(--muted); font-size: 11px; }
 
     /* Chat */
+    .search-bar { width: 100%; background: var(--surface); border: 1px solid var(--border); padding: 14px 16px; border-radius: 12px; color: var(--text); margin-bottom: 15px; outline: none; }
     .chat-box { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
     .msg { max-width: 80%; padding: 10px 14px; border-radius: 14px; font-size: 14px; }
     .msg.me { align-self: flex-end; background: var(--gold); color: #000; }
     .msg.other { align-self: flex-start; background: var(--surface-2); border: 1px solid var(--border); }
-    .chat-input-area { display: flex; gap: 8px; margin-top: 10px; }
     .user-card { background: var(--surface); border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-    
-    /* Settings */
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-    .card p { font-size: 14px; font-weight: 600; margin: 0; }
-    .card small { color: var(--muted); font-size: 11px; }
   </style>
 </head>
 <body>
   <div class="app">
 
-    <!-- 1. Welcome -->
-    <section id="screen-welcome" class="screen active">
-      <div class="welcome-body">
-        <div class="emblem">H</div>
-        <h1 class="brand-title">HereApp</h1>
-        <p class="brand-sub">Private, calm, global messaging designed for presence.</p>
+    <!-- 1. Welcome (نفس الصورة) -->
+    <section id="screen-welcome" class="screen active welcome-screen">
+      <div class="welcome-header">
+        <span style="color:var(--gold); font-size:12px; letter-spacing:1px;">HEREAPP</span>
+        <span style="color:var(--muted); font-size:12px;">🌐 English</span>
       </div>
-      <div class="welcome-actions">
-        <button class="btn-gold" onclick="showScreen('signin')">Sign In</button>
-        <button class="btn-outline" onclick="showScreen('signup')">Create Account</button>
+      <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop" class="welcome-img" alt="Luxury Background" />
+      
+      <div class="welcome-content">
+        <div class="logo-box">H</div>
+        <div class="brand-title">HereApp</div>
+        <div class="brand-sub">JUST BE HERE.</div>
+        <div class="desc">Private, calm, global messaging designed for presence.</div>
+        
+        <button class="btn-gold" onclick="showScreen('signin')" style="margin-bottom:12px;">Sign In</button>
+        <button class="btn-outline" onclick="showScreen('signup')" style="margin-bottom:20px;">Create Account</button>
+        <span style="color:var(--muted); font-size:12px; cursor:pointer;" onclick="showScreen('chats')">Preview Main Workspace</span>
       </div>
     </section>
 
-    <!-- 2. Sign In -->
+    <!-- 2. Sign In (نفس الصورة) -->
     <section id="screen-signin" class="screen">
-      <div class="top-row"><button class="back-btn" onclick="showScreen('welcome')">←</button></div>
-      <h2 style="font-family:var(--serif); margin-bottom:20px;">Sign In</h2>
+      <div class="auth-header">
+        <button class="back-btn" onclick="showScreen('welcome')">←</button> Sign In
+      </div>
+      <div style="color:var(--gold); font-size:11px; letter-spacing:1px; margin-bottom:20px;">JUST BE HERE.</div>
+      
+      <div id="signin-status" class="status-box"></div>
+      
       <form id="signin-form">
-        <div class="field"><label>Email</label><input id="signin-email" class="input" type="email" required /></div>
-        <div class="field"><label>Password</label><input id="signin-password" class="input" type="password" required /></div>
-        <button class="btn-gold" type="submit">Sign In</button>
+        <div class="input-group">
+          <label>Email or @username</label>
+          <input id="signin-email" type="email" required />
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input id="signin-password" type="password" required />
+        </div>
+        <div style="text-align:right; margin-bottom:20px;">
+          <span style="color:var(--muted); font-size:12px;">Forgot Password?</span>
+        </div>
+        
+        <button class="btn-gold" type="submit" style="margin-bottom:20px;">Sign In</button>
+        <div style="text-align:center; color:var(--muted); font-size:12px; margin-bottom:15px;">OR</div>
+        <button type="button" class="btn-outline">Continue with Google</button>
       </form>
     </section>
 
     <!-- 3. Sign Up -->
     <section id="screen-signup" class="screen">
-      <div class="top-row"><button class="back-btn" onclick="showScreen('welcome')">←</button></div>
-      <h2 style="font-family:var(--serif); margin-bottom:20px;">Create Account</h2>
+      <div class="auth-header">
+        <button class="back-btn" onclick="showScreen('welcome')">←</button> Create Account
+      </div>
+      <div style="color:var(--gold); font-size:11px; letter-spacing:1px; margin-bottom:20px;">JOIN THE EXPERIENCE.</div>
+      <div id="signup-status" class="status-box"></div>
+      
       <form id="signup-form">
-        <div class="field"><label>Name</label><input id="signup-name" class="input" type="text" required /></div>
-        <div class="field"><label>@Username</label><input id="signup-username" class="input" type="text" required /></div>
-        <div class="field"><label>Email</label><input id="signup-email" class="input" type="email" required /></div>
-        <div class="field"><label>Password</label><input id="signup-password" class="input" type="password" required minlength="6" /></div>
-        <button class="btn-gold" type="submit">Create Account</button>
+        <div class="input-group"><label>Full Name</label><input id="signup-name" type="text" required /></div>
+        <div class="input-group"><label>@Username</label><input id="signup-username" type="text" required /></div>
+        <div class="input-group"><label>Email</label><input id="signup-email" type="email" required /></div>
+        <div class="input-group"><label>Password</label><input id="signup-password" type="password" required minlength="6" /></div>
+        <button class="btn-gold" type="submit" style="margin-top:10px;">Create Account</button>
       </form>
     </section>
 
     <!-- 4. Profile Setup -->
     <section id="screen-profile-setup" class="screen">
-      <div class="top-row"><h2 style="font-family:var(--serif); font-size:24px; color:var(--text);">Profile Setup</h2></div>
+      <div class="auth-header">Profile Setup</div>
       <form id="profile-form">
-        <div class="field"><label>Full Name</label><input id="prof-name" class="input" type="text" required /></div>
-        <div class="field"><label>@Username</label><input id="prof-username" class="input" type="text" required /></div>
+        <div class="input-group"><label>Full Name</label><input id="prof-name" type="text" required /></div>
+        <div class="input-group"><label>@Username</label><input id="prof-username" type="text" required /></div>
         <button class="btn-gold" type="submit">Save & Continue</button>
       </form>
     </section>
 
-    <!-- 5. Chats (Main / Smart Inbox) -->
+    <!-- 5. Chats (نفس الصورة) -->
     <section id="screen-chats" class="screen">
-      <div class="main-header">Smart Inbox</div>
-      <input class="search-bar" id="search-user" placeholder="ابحث برقم الـ ID (مثال: 00001)..." />
-      <button class="btn-gold" style="margin-bottom:15px;" onclick="searchUser()">بحث</button>
-      <div id="search-results"></div>
-      <div style="text-align:center; margin-top:30px; color:var(--muted);">
-        <div style="font-size:40px; margin-bottom:10px;">💬</div>
-        <p>لا توجد محادثات حديثة</p>
+      <div class="main-header">Chats</div>
+      <div style="position:relative; margin-bottom:20px;">
+        <input class="search-bar" id="search-user" placeholder="Search..." style="padding-left:40px;" />
+        <span style="position:absolute; left:15px; top:15px; color:var(--muted);">🔍</span>
       </div>
+      <button class="btn-gold" style="margin-bottom:15px; padding:10px;" onclick="searchUser()">Search HereApp ID</button>
+      <div id="search-results"></div>
+      
+      <div style="text-align:center; margin-top:50px; color:var(--muted);">
+        <div style="font-size:30px; margin-bottom:10px; border:1px solid var(--border); display:inline-block; padding:15px; border-radius:50%;">💬</div>
+        <p style="font-weight:600; color:var(--text);">No chats yet</p>
+        <p style="font-size:12px; margin-top:5px;">Tap the + button below to select a contact and start chatting.</p>
+      </div>
+      
+      <button style="position:absolute; bottom:80px; right:20px; width:50px; height:50px; border-radius:15px; background:var(--gold); border:none; font-size:24px; color:#000; cursor:pointer;">+</button>
     </section>
 
     <!-- 6. Chat Room -->
     <section id="screen-chat-room" class="screen">
-      <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
-        <button onclick="showScreen('chats')" style="background:none; border:none; color:var(--gold); font-size:20px; cursor:pointer;">←</button>
-        <div class="main-header" style="margin:0; font-size:18px;" id="chat-title">المحادثة</div>
+      <div class="auth-header">
+        <button class="back-btn" onclick="showScreen('chats')">←</button> <span id="chat-title">Chat</span>
       </div>
       <div class="chat-box" id="messages-container"></div>
-      <div class="chat-input-area">
-        <input class="input" id="msg-input" placeholder="اكتب رسالة..." style="margin:0;" />
-        <button class="btn-gold" style="width:50px;" onclick="sendMessage()">➤</button>
+      <div style="display:flex; gap:8px;">
+        <input class="search-bar" id="msg-input" placeholder="Type a message..." style="margin:0; flex:1;" />
+        <button class="btn-gold" style="width:50px; padding:0;" onclick="sendMessage()">➤</button>
       </div>
     </section>
 
-    <!-- 7. Spaces (Placeholder) -->
-    <section id="screen-spaces" class="screen">
-      <div class="main-header">Here Spaces</div>
-      <div style="text-align:center; color:var(--muted); margin-top:50px;">
-        <div style="font-size:40px; margin-bottom:10px;">🌐</div>
-        <p>المساحات المشتركة ستظهر هنا.</p>
+    <!-- 7. Groups (نفس الصورة) -->
+    <section id="screen-groups" class="screen">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <div class="main-header" style="margin:0;">Groups</div>
+        <span style="color:var(--gold); font-size:12px;">Create Group</span>
+      </div>
+      <div style="position:relative; margin-bottom:20px;">
+        <input class="search-bar" placeholder="Search..." style="padding-left:40px;" />
+        <span style="position:absolute; left:15px; top:15px; color:var(--muted);">🔍</span>
+      </div>
+      <div style="display:flex; gap:10px; margin-bottom:30px;">
+        <span style="background:rgba(212,175,55,0.1); border:1px solid var(--border); color:var(--gold); padding:6px 12px; border-radius:20px; font-size:12px;">My Groups</span>
+        <span style="border:1px solid var(--border); color:var(--muted); padding:6px 12px; border-radius:20px; font-size:12px;">Public Discovery</span>
+      </div>
+      
+      <div style="text-align:center; margin-top:50px; color:var(--muted);">
+        <div style="font-size:30px; margin-bottom:10px; border:1px solid var(--border); display:inline-block; padding:15px; border-radius:50%;">👥</div>
+        <p style="font-weight:600; color:var(--text);">No Groups Yet</p>
+        <p style="font-size:12px; margin-top:5px;">Create or join curated circles and global channels in upcoming phases.</p>
       </div>
     </section>
 
-    <!-- 8. Bookmarks (Placeholder) -->
-    <section id="screen-bookmarks" class="screen">
-      <div class="main-header">Here Bookmark</div>
-      <div style="text-align:center; color:var(--muted); margin-top:50px;">
-        <div style="font-size:40px; margin-bottom:10px;">🔖</div>
-        <p>الرسائل المحفوظة ستظهر هنا.</p>
+    <!-- 8. Discover (نفس الصورة) -->
+    <section id="screen-discover" class="screen">
+      <div class="main-header">Discover</div>
+      <div style="position:relative; margin-bottom:20px;">
+        <input class="search-bar" placeholder="Search..." style="padding-left:40px;" />
+        <span style="position:absolute; left:15px; top:15px; color:var(--muted);">🔍</span>
+      </div>
+      
+      <div style="text-align:center; margin-top:50px; color:var(--muted);">
+        <div style="font-size:30px; margin-bottom:10px; border:1px solid var(--border); display:inline-block; padding:15px; border-radius:50%;">🌍</div>
+        <p style="font-weight:600; color:var(--text);">Global Directory Ready</p>
+        <p style="font-size:12px; margin-top:5px;">Search verified contacts, public rooms, and global communities once discovery services are live.</p>
       </div>
     </section>
 
-    <!-- 9. Profile (Owner & Verification) -->
+    <!-- 9. Profile (نفس الصورة) -->
     <section id="screen-profile" class="screen">
       <div class="main-header">Profile</div>
-      <div class="profile-banner" style="background: linear-gradient(180deg, #222, #0a0a0a);"></div>
+      <div class="profile-banner"></div>
       <div class="profile-card">
         <div class="avatar" id="prof-avatar-letter">H</div>
         
         <div style="display:flex; align-items:center; justify-content:center;">
-            <div id="prof-name-display" style="font-size:20px; font-weight:700;">User</div>
+            <div id="prof-name-display" style="font-size:20px; font-weight:700;">HereApp</div>
             <div id="verified-badge" class="verified-badge" style="display:none;">✔️</div>
         </div>
 
-        <div id="prof-user-display" style="font-size:13px; color:var(--muted);">@user</div>
+        <div id="prof-user-display" style="font-size:13px; color:var(--muted);">@hereapp · ID: <span id="prof-id-display">00001</span></div>
         
-        <div id="owner-badge" class="badge" style="display:none;">🛡️ Founder & Owner</div>
-        
-        <div style="margin-top:15px; font-size:12px; color:var(--muted);">ID: <span id="prof-id-display" style="color:var(--text);">00000</span></div>
+        <div id="owner-badge" class="owner-badge" style="display:none;">🛡️ Founder & Owner</div>
         
         <div style="display:flex; gap:10px; width:100%; margin-top:20px;">
             <button class="btn-outline" style="padding:10px; font-size:12px;">My QR Code</button>
             <button class="btn-outline" style="padding:10px; font-size:12px;">Scan QR</button>
         </div>
+        <button class="btn-outline" style="padding:10px; font-size:12px; margin-top:10px;">Open Profile Setup</button>
       </div>
 
-      <div id="owner-panel-btn" class="owner-card" style="display:none;" onclick="alert('هنا رح تكون لوحة تحكم المالك الكاملة قريباً!')">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-                <p>Owner Panel · HereApp Control Center</p>
-                <small>Verification requests & Management</small>
-            </div>
-            <span style="color:var(--gold);">›</span>
+      <!-- Owner Panel (مخفي للمستخدم العادي) -->
+      <div id="owner-panel-btn" class="card" style="display:none; border-color:var(--gold); margin-top:15px;" onclick="alert('Owner Panel Coming Soon!')">
+        <div>
+           <p style="color:var(--gold);">Owner Panel · HereApp Control Center</p>
+           <small>Verification requests & HereApp ID management</small>
         </div>
+        <span style="color:var(--gold);">›</span>
+      </div>
+      
+      <div class="card" style="margin-top:10px;">
+        <div>
+           <p>Here Bookmarks</p>
+           <small>Saved messages, folders & search</small>
+        </div>
+        <span style="color:var(--muted);">›</span>
       </div>
     </section>
 
-    <!-- 10. Settings -->
+    <!-- 10. Settings (نفس الصورة) -->
     <section id="screen-settings" class="screen">
       <div class="main-header">Settings</div>
       
-      <div style="color:var(--muted); font-size:11px; margin-bottom:10px;">APPEARANCE & THEME</div>
+      <div style="color:var(--muted); font-size:10px; letter-spacing:1px; margin-bottom:10px;">APPEARANCE & THEME</div>
       <div class="card" style="flex-direction:column; align-items:flex-start;">
         <p style="margin-bottom:10px;">Theme</p>
         <div style="display:flex; gap:10px;">
-            <span class="badge">🌙 Dark</span>
-            <span style="border:1px solid var(--border); padding:4px 10px; border-radius:20px; font-size:11px; color:var(--muted);">☀️ Light</span>
+            <span style="background:rgba(212,175,55,0.1); border:1px solid var(--border); color:var(--gold); padding:6px 12px; border-radius:20px; font-size:12px;">🌙 Dark</span>
+            <span style="border:1px solid var(--border); color:var(--muted); padding:6px 12px; border-radius:20px; font-size:12px;">☀️ Light</span>
         </div>
       </div>
       
-      <div style="color:var(--muted); font-size:11px; margin-top:10px; margin-bottom:10px;">LANGUAGE & REGION</div>
+      <div style="color:var(--muted); font-size:10px; letter-spacing:1px; margin-top:20px; margin-bottom:10px;">LANGUAGE & REGION</div>
       <div class="card">
         <div>
             <p>App Language</p>
-            <small>English · LTR</small>
+            <small>English · LTR (Left-to-Right)</small>
         </div>
         <span style="color:var(--muted);">›</span>
       </div>
 
-      <button class="btn-outline" style="margin-top:auto; margin-bottom:10px; color:var(--danger); border-color:var(--danger);" onclick="signOut(auth)">Sign Out</button>
+      <button class="btn-outline" style="margin-top:30px; color:#fff; border-color:var(--border);" onclick="signOut(auth)">Sign Out</button>
     </section>
 
-    <!-- Bottom Nav -->
+    <!-- Bottom Nav (نفس الصورة) -->
     <div id="bottom-nav" class="bottom-nav" style="display:none;">
       <div class="nav-item active" onclick="showScreen('chats')"><span>💬</span>Chats</div>
-      <div class="nav-item" onclick="showScreen('spaces')"><span>🌐</span>Spaces</div>
-      <div class="nav-item" onclick="showScreen('bookmarks')"><span>🔖</span>Saved</div>
+      <div class="nav-item" onclick="showScreen('groups')"><span>👥</span>Groups</div>
+      <div class="nav-item" onclick="showScreen('discover')"><span>🔍</span>Discover</div>
       <div class="nav-item" onclick="showScreen('profile')"><span>👤</span>Profile</div>
       <div class="nav-item" onclick="showScreen('settings')"><span>⚙️</span>Settings</div>
     </div>
@@ -256,11 +313,15 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // الإيميل الخاص بك كمالك
     const OWNER_EMAIL = "mhammadmoussawi12345@gmail.com";
-
     let currentUserId = null;
     let currentChatId = null;
+
+    function setStatus(id, text, type) {
+      const box = document.getElementById(id);
+      box.textContent = text;
+      box.className = "status-box " + type;
+    }
 
     window.showScreen = function(name) {
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
@@ -268,13 +329,13 @@
       if(target) target.classList.add("active");
       
       const nav = document.getElementById("bottom-nav");
-      if(["chats", "spaces", "bookmarks", "profile", "settings"].includes(name)) {
+      if(["chats", "groups", "discover", "profile", "settings"].includes(name)) {
         nav.style.display = "flex";
         document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
         const navItems = document.querySelectorAll(".nav-item");
         if(name === 'chats') navItems[0].classList.add('active');
-        if(name === 'spaces') navItems[1].classList.add('active');
-        if(name === 'bookmarks') navItems[2].classList.add('active');
+        if(name === 'groups') navItems[1].classList.add('active');
+        if(name === 'discover') navItems[2].classList.add('active');
         if(name === 'profile') { navItems[3].classList.add('active'); loadProfileData(); }
         if(name === 'settings') navItems[4].classList.add('active');
       } else {
@@ -296,15 +357,14 @@
       }
     });
 
-    // Sign In
     document.getElementById("signin-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const email = document.getElementById("signin-email").value;
       const password = document.getElementById("signin-password").value;
-      try { await signInWithEmailAndPassword(auth, email, password); } catch (err) { alert(err.message); }
+      try { await signInWithEmailAndPassword(auth, email, password); } 
+      catch (err) { setStatus("signin-status", "Invalid email/username or password.", "error"); }
     });
 
-    // Sign Up
     document.getElementById("signup-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const name = document.getElementById("signup-name").value;
@@ -322,7 +382,6 @@
       } catch (err) { alert(err.message); }
     });
 
-    // Profile Setup
     document.getElementById("profile-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const name = document.getElementById("prof-name").value;
@@ -341,7 +400,6 @@
       } catch (error) { alert("Error: " + error.message); }
     });
 
-    // Load Profile Data
     async function loadProfileData() {
       const user = auth.currentUser;
       if(!user) return;
@@ -356,7 +414,7 @@
         if (user.email === OWNER_EMAIL) {
             document.getElementById("verified-badge").style.display = "block";
             document.getElementById("owner-badge").style.display = "inline-flex";
-            document.getElementById("owner-panel-btn").style.display = "block";
+            document.getElementById("owner-panel-btn").style.display = "flex";
         } else {
             document.getElementById("verified-badge").style.display = "none";
             document.getElementById("owner-badge").style.display = "none";
@@ -365,19 +423,18 @@
       }
     }
 
-    // Search User
     window.searchUser = async () => {
       const term = document.getElementById('search-user').value.trim();
       if(!term) return;
       const resultsDiv = document.getElementById('search-results');
-      resultsDiv.innerHTML = "جاري البحث...";
+      resultsDiv.innerHTML = "Searching...";
 
       const q = query(collection(db, "users"), where("hereAppId", "==", term));
       const snap = await getDocs(q);
       
       resultsDiv.innerHTML = "";
       if(snap.empty) {
-        resultsDiv.innerHTML = "<p style='color:red;'>لا يوجد مستخدم بهذا الرقم.</p>";
+        resultsDiv.innerHTML = "<p style='color:red;'>No user found.</p>";
         return;
       }
       
@@ -390,13 +447,12 @@
             <div style="font-weight:800;">${data.displayName}</div>
             <div style="color:var(--gold); font-size:12px;">ID: ${data.hereAppId}</div>
           </div>
-          <button class="btn-gold" style="width:auto; padding:8px 12px;" onclick="openChat('${docSnap.id}', '${data.displayName}')">دردشة</button>
+          <button class="btn-gold" style="width:auto; padding:8px 12px;" onclick="openChat('${docSnap.id}', '${data.displayName}')">Chat</button>
         `;
         resultsDiv.appendChild(div);
       });
     };
 
-    // Open Chat
     window.openChat = (otherId, otherName) => {
       const ids = [currentUserId, otherId].sort();
       currentChatId = ids.join("_");
@@ -420,7 +476,6 @@
       });
     };
 
-    // Send Message
     window.sendMessage = async () => {
       const input = document.getElementById('msg-input');
       const text = input.value.trim();
