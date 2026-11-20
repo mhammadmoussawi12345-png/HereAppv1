@@ -21,11 +21,11 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '17'
+          java-version: '21'
 
       - name: Build Capacitor App
         run: |
-          # تنظيف شامل لأي ملفات قديمة
+          # تنظيف شامل
           rm -rf android
           rm -rf node_modules
           rm -rf www
@@ -42,10 +42,10 @@ jobs:
           npx cap init HereApp com.hereapp.messenger --web-dir=www
           npx cap add android
           
-          # إصلاح جذري لتعارض الكوتلن بملف الـ gradle
-          sed -i 's/ext.kotlin_version = .*/ext.kotlin_version = "1.9.20"/' android/build.gradle
+          # الإصلاح الجذري: إجبار المشروع على استخدام جافا 21 والكوتلن الصحيح
+          echo "android.useAndroidX=true" >> android/gradle.properties
+          echo "android.enableJetifier=true" >> android/gradle.properties
           
-          # بناء الـ APK
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
